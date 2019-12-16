@@ -1,0 +1,13 @@
+log/
+db/
+/target
+.env
+.lein-env
+.lein-repl-history
+rest.http
+.config.edn
+stellar-poc/.env
+s3-server/.env 
+stellar-poc/node_modules
+s3-server/node_modules
+stellar-poc/rest.http

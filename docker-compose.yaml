@@ -1,0 +1,75 @@
+version: "3"
+networks:
+  web:
+    external: true
+  internal:
+    external: false
+services:
+  db-testnet:
+    image: postgres
+    container_name: "zeetomic-db-testnet"
+    ports:
+      - 5432:5432
+    volumes:
+      - ./db/data:/var/lib/postgresql
+    networks:
+      - web
+      - internal
+    environment:
+      - VIRTUAL_HOST=zee.db
+      - POSTGRES_USER=AKIAV2YJRM5FKNODTNZ3
+      - POSTGRES_PASSWORD=B2bLth6rTB4awGhulMiGabiu4CdWrBQ77QX50KFZ
+      - POSTGRES_DB=zeetomic-core
+  adminer:
+    image: adminer:4.7.5
+    restart: always
+    ports:
+      - 8088:8080
+    networks:
+      - internal
+      - web
+    depends_on:
+      - db-testnet
+  node-testnet:
+    image: node:12-alpine
+    container_name: "stellar-node-testnet"
+    restart: unless-stopped
+    ports:
+      - 5001:5001
+    volumes:
+      - ./stellar-poc:/home/node/app
+    networks:
+      - internal
+    working_dir: /home/node/app
+    command: >
+      sh -c "npm install -g pm2 && npm install && pm2-runtime src/app.js --watch"
+  s3-server:
+    image: node:12-alpine
+    container_name: "zeetomic-s3-testnet"
+    restart: always
+    ports:
+      - 9001:9001
+    volumes:
+      - ./s3-server:/home/node/app
+    networks:
+      - web
+    working_dir: /home/node/app
+    command: >
+      sh -c "npm install -g pm2 && npm install && pm2-runtime server.js --watch"
+
+  apiserver:
+    image: openjdk:13
+    container_name: "zeetomic-api-testnet"
+    restart: unless-stopped
+    depends_on:
+      - db-testnet
+      - node-testnet
+    ports:
+      - 3001:3000
+    volumes:
+      - ./:/usr/src/myapp
+    networks:
+      - web
+      - internal
+    working_dir: /usr/src/myapp
+    command: sh -c "java -jar target/server.jar"

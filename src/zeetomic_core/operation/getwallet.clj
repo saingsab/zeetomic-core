@@ -1,0 +1,44 @@
+(ns zeetomic-core.operation.getwallet
+  (:require [clj-http.client :as client]
+            [zeetomic-core.middleware.auth :as auth]
+            [buddy.hashers :as hashers]
+            [zeetomic-core.db.users :as users]
+            [zeetomic-core.util.conn :as conn]
+            [zeetomic-core.util.ed :as ed]
+            [clojure.data.json :as json]
+            [zeetomic-core.operation.addasset :as addasset]
+            [aero.core :refer (read-config)]))
+
+(def env (read-config ".config.edn"))
+
+(defn wallets []
+  (try
+    (json/read-str
+     (get (client/post (str (get env :getwalletendpoint))
+                       {:form-params {:dkey (str (get env :dkey))}
+                        :content-type :json}) :body) :key-fn keyword)
+    (catch Exception ex
+      "Internal server error")))
+
+(def xwallet (atom {:wallet "" :seed ""}))
+
+(defn is-wallet-nil? [id]
+  (nil? (get (users/get-users-by-id conn/db {:ID id}) :wallet)))
+
+(defn gen-wallet
+  [token pin]
+  (if (= (auth/authorized? token) true)
+    (if (nil? (is-wallet-nil? (get (auth/token? token) :_id)))
+    ; True
+      (try
+        (reset! xwallet (wallets))
+        (future (Thread/sleep 10000)
+                (users/setup-user-wallet conn/db {:ID (get (auth/token? token) :_id) :WALLET (get @xwallet :wallet) :SEED (ed/encrypt (get @xwallet :seed)) :PIN (hashers/derive pin)})
+                (addasset/add-assets! (get @xwallet :seed) "ZTO" (get env :assetIssuer)))
+        {:message {:wallet (get @xwallet :wallet) :seed (get @xwallet :seed)}}
+        (catch Exception ex
+          (.getMessage ex)))
+    ; False
+      {:message "Opp! look like you already had a wallet"})
+
+    {:error {:message "Internal server error"}}))
