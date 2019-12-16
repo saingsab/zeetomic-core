@@ -21,7 +21,7 @@
   (if (= (auth/authorized? token) true)
   ; letdo
     (try
-      (users/setup-user-profile conn/db {:ID (get (auth/token? token) :_id) :FIRST_NAME first-name :MID_NAME mid-name :LAST_NAME last-name :GENDER gender})
+      (users/setup-user-profile conn/db {:ID (get (auth/token? token) :_id) :FIRST_NAME first-name :MID_NAME mid-name :LAST_NAME last-name :GENDER gender :STATUS_ID status})
       {:message "Your profile have been saved successfully"}
       (catch Exception ex
         (.getMessage ex)))
