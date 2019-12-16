@@ -72,4 +72,4 @@ services:
       - web
       - internal
     working_dir: /usr/src/myapp
-    command: sh -c "java -jar target/server.jar"
+    command: sh -c "java -jar apis/server.jar"
