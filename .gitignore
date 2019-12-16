@@ -1,6 +1,5 @@
 log/
 db/
-/target
 .env
 .lein-env
 .lein-repl-history
