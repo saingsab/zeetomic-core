@@ -6,7 +6,7 @@
             [zeetomic-core.middleware.auth :as auth]))
 
 (def status
-  (get (status/get-status-by-name conn/db {:STATUS_NAME "active"}) :ID))
+  (get (status/get-status-by-name conn/db {:STATUS_NAME "active"}) :id))
 
 (defn phone-not-exist?
   [phone]
