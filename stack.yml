@@ -1,0 +1,28 @@
+version: "3.1"
+networks:
+  web:
+    external: true
+  internal:
+    external: false
+services:
+  db-testnet:
+    image: postgres
+    restart: always
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: AKIAV2YJRM5FKNODTNZ3
+      POSTGRES_PASSWORD: B2bLth6rTB4awGhulMiGabiu4CdWrBQ77QX50KFZ
+    networks:
+      - internal
+      - web
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8088:8080
+    networks:
+      - web
+    depends_on:
+      - db-testnet
