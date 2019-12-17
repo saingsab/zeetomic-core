@@ -113,7 +113,7 @@
        :summary "Login with phone number get back token"
        (ok (login/loginbyphone (get user :phone) (get user :password))))
 
-     (POST "/userporfile" []
+     (POST "/userprofile" []
        :header-params [authorization :- s/Str]
        :body [profile User-profile]
        :summary "setup user profile information"
@@ -123,7 +123,7 @@
                                     (get profile :last-name)
                                     (get profile :gender))))
 
-     (GET "/userporfile" []
+     (GET "/userprofile" []
        :header-params [authorization :- s/Str]
        :summary "display profile user"
        (ok (userinfo/get-user-profile authorization)))
