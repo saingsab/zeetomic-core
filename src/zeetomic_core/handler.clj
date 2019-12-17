@@ -2,6 +2,7 @@
   (:require [compojure.api.sweet :refer :all]
             [ring.util.http-response :refer :all]
             [ring.util.response :refer [redirect]]
+            [ring.middleware.cors :refer [wrap-cors]]
             [schema.core :as s]
             [zeetomic-core.db.users :as users]
             [zeetomic-core.util.conn :as conn]
@@ -93,6 +94,7 @@
      (POST "/registerbyemail" []
        :body [user User-mail]
        :summary "Enter correct email and received confirmation"
+
        (ok (register/accountbyemail (get user :email) (get user :password))))
 
 
@@ -208,6 +210,11 @@
        :summary "List all receipt activity"
        (ok (receipts/get-receipt authorization)))
 
+
+
 ; next
      )))
 
+(def handler
+  (wrap-cors app :access-control-allow-origin [#".*"]
+             :access-control-allow-methods [:get :post]))

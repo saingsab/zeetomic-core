@@ -14,12 +14,13 @@
                   [com.draines/postal "2.0.3"]
                   ; HTTP Client
                   [clj-http "3.10.0"]
+                  [ring-cors "0.1.13"]
                   ; JSON
                   [org.clojure/data.json "0.2.7"]
                   ; Hash
                   [buddy/buddy-hashers "1.4.0"]
                   [buddy/buddy-auth "2.2.0"]]
-   :ring {:handler zeetomic-core.handler/app}
+   :ring {:handler zeetomic-core.handler/handler}
    :uberjar-name "server.jar"
    :profiles {:dev {:dependencies [[javax.servlet/javax.servlet-api "3.1.0"]]
                     :plugins [[lein-ring "0.12.5"]]}})
