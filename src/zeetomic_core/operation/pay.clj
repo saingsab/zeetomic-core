@@ -7,6 +7,7 @@
             [zeetomic-core.db.branches :as branches]
             [clojure.data.json :as json]
             [zeetomic-core.util.writelog :as writelog]
+            [ring.util.http-response :refer :all]
             [aero.core :refer (read-config)]))
 
 (def env (read-config ".config.edn"))
@@ -61,10 +62,11 @@
                   (catch Exception ex
                     (.getMessage ex)))
                 (writelog/tx-log! (str "FAILDED : FN Pay from : " (get (auth/token? token) :_id) " Out of ZTO "))))
-      {:message "Your transaction has been submitted!"}
+      (ok {:message "Your transaction has been submitted!"})
       (catch Exception ex
-        (.getMessage ex)))
-    {:error {:message "Unauthorized operation not permitted"}}))
+        (writelog/op-log! (str "ERROR : " (.getMessage ex)))
+        {:error {:message "Unauthorized operation not permitted"}}))
+    (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
 
 
 (defn reward!

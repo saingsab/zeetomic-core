@@ -6,7 +6,8 @@
             [zeetomic-core.util.conn :as conn]
             [zeetomic-core.operation.pay :as pay]
             [zeetomic-core.db.users :as users]
-            [zeetomic-core.util.ed :as ed]))
+            [zeetomic-core.util.ed :as ed]
+            [ring.util.http-response :refer :all]))
 
 (def txid (atom ""))
 
@@ -36,18 +37,18 @@
                                       :REWARDS (reward! amount location)
                                       :STATUS "Pendding"
                                       :CREATED_BY created-by})
-        {:message "Your transaction has been submitted!"}
+        (ok {:message "Your transaction has been submitted!"})
         (catch Exception ex
           (writelog/op-log! (str "ERROR : " (.getMessage ex)))
           {:error {:message "Something went wrong on our end"}})))
-    {:error {:message "Unauthorized operation not permitted"}}))
+    (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
 
 (defn get-receipt
   [token]
   (if (= (auth/authorized? token) true)
     (try
-      (receipt/get-receipt-by-owner conn/db {:ID (get (auth/token? token) :_id)})
+      (ok (receipt/get-receipt-by-owner conn/db {:ID (get (auth/token? token) :_id)}))
       (catch Exception ex
         (writelog/op-log! (str "ERROR : " (.getMessage ex)))
         {:error {:message "Something went wrong on our end"}}))
-    {:error {:message "Unauthorized operation not permitted"}}))
+    (unauthorized {:error {:message "Unauthorized operation not permitted"}})))

@@ -5,7 +5,9 @@
             [zeetomic-core.db.users :as users]
             [zeetomic-core.util.conn :as conn]
             [clojure.data.json :as json]
-            [aero.core :refer (read-config)]))
+            [aero.core :refer (read-config)]
+            [ring.util.http-response :refer :all]
+            [zeetomic-core.util.writelog :as writelog]))
 
 (def env (read-config ".config.edn"))
 
@@ -24,7 +26,8 @@
                                   :assetCode assetCode
                                   :assetIssuer assetIssuer}
                     :content-type :json})
-      {:message (str "You successfully added " assetCode " into your portforilo")}
+      (ok {:message (str "You successfully added " assetCode " into your portforilo")})
       (catch Exception ex
-        (.getMessage ex)))
-    {:error {:message "Internal server error"}}))
+        (writelog/op-log! (str "ERROR : " (.getMessage ex)))
+        {:error {:message "Internal server error"}}))
+    (unauthorized {:error {:message "Unauthorized operation not permitted"}})))

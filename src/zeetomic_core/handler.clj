@@ -117,16 +117,16 @@
        :header-params [authorization :- s/Str]
        :body [profile User-profile]
        :summary "setup user profile information"
-       (ok (userinfo/setup-profile! authorization
-                                    (get profile :first-name)
-                                    (get profile :mid-name)
-                                    (get profile :last-name)
-                                    (get profile :gender))))
+       (userinfo/setup-profile! authorization
+                                (get profile :first-name)
+                                (get profile :mid-name)
+                                (get profile :last-name)
+                                (get profile :gender)))
 
      (GET "/userprofile" []
        :header-params [authorization :- s/Str]
        :summary "display profile user"
-       (ok (userinfo/get-user-profile authorization)))
+       (userinfo/get-user-profile authorization))
 
      (GET "/account-confirmation" []
        :query-params [userid :- s/Str, verification-code :- s/Str]
@@ -147,38 +147,38 @@
      (POST "/getwallet" []
        :body [req-wallet Req-wallet]
        :header-params [authorization :- s/Str]
-       (ok (getwallet/gen-wallet authorization (get req-wallet :pin))))
+       (getwallet/gen-wallet authorization (get req-wallet :pin)))
 
      (POST "/addasset" []
        :body [add-asset Add-asset]
        :header-params [authorization :- s/Str]
-       (ok (addasset/accept-asset? authorization
-                                   (get add-asset :asset-code)
-                                   (get add-asset :asset-ssuer))))
+       (addasset/accept-asset? authorization
+                               (get add-asset :asset-code)
+                               (get add-asset :asset-ssuer)))
 
      (POST "/sendpayment" []
        :header-params [authorization :- s/Str]
        :body [send-payment Send-payment]
-       (ok (pay/pay! authorization
-                     (get send-payment :asset-code)
-                     (get send-payment :destination)
-                     (get send-payment :amount)
-                     (get send-payment :memo))))
+       (pay/pay! authorization
+                 (get send-payment :asset-code)
+                 (get send-payment :destination)
+                 (get send-payment :amount)
+                 (get send-payment :memo)))
 
      (POST "/add-merchant" []
        :header-params [authorization :- s/Str]
        :body [merchant Merchants]
-       (ok (merchants/add-merchant! authorization
-                                    (get merchant :merchant-name)
-                                    (get merchant :short-name))))
+       (merchants/add-merchant! authorization
+                                (get merchant :merchant-name)
+                                (get merchant :short-name)))
 
      (POST "/update-merchant" []
        :header-params [authorization :- s/Str]
        :body [update-merchant Update-merchant]
-       (ok (merchants/update-merchant? authorization
-                                       (get update-merchant :id)
-                                       (get update-merchant :merchant-name)
-                                       (get update-merchant :short-name))))
+       (merchants/update-merchant? authorization
+                                   (get update-merchant :id)
+                                   (get update-merchant :merchant-name)
+                                   (get update-merchant :short-name)))
 
      (POST "/get-merchant-by-name" []
        :header-params [authorization :- s/Str]
@@ -190,27 +190,25 @@
      (GET "/get-merchant" []
        :header-params [authorization :- s/Str]
        :summary "Get list merchant by creator"
-       (ok (merchants/get-merchant-by-owner authorization)))
+       (merchants/get-merchant-by-owner authorization))
 
      (GET "/get-all-merchants" []
        :header-params [authorization :- s/Str]
        :summary "List all merchants"
-       (ok (merchants/get-all-merchants authorization)))
+       (merchants/get-all-merchants authorization))
 
      (POST "/addreceipt" []
        :header-params [authorization :- s/Str]
        :body [receipt Receipt]
-       (ok (receipts/add-receipt! authorization
-                                  (get receipt :receipt-no)
-                                  (get receipt :amount)
-                                  (get receipt :location))))
+       (receipts/add-receipt! authorization
+                              (get receipt :receipt-no)
+                              (get receipt :amount)
+                              (get receipt :location)))
 
      (GET "/get-receipt" []
        :header-params [authorization :- s/Str]
        :summary "List all receipt activity"
-       (ok (receipts/get-receipt authorization)))
-
-
+       (receipts/get-receipt authorization))
 
 ; next
      )))

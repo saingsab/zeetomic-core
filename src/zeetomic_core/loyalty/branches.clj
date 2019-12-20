@@ -3,7 +3,8 @@
             [zeetomic-core.db.merchant :as merchant]
             [zeetomic-core.middleware.auth :as auth]
             [zeetomic-core.util.conn :as conn]
-            [zeetomic-core.util.writelog :as writelog]))
+            [zeetomic-core.util.writelog :as writelog]
+            [ring.util.http-response :refer :all]))
 
 (defn add-branches!
   [token merchant-id branches-name address reward-rates asset-code minimum-spend approval-code]
@@ -20,12 +21,12 @@
                                           :MINIMUM_SPEND  (Float. minimum-spend)
                                           :APPROVAL_CODE approval-code
                                           :CREATED_BY created-by})
-          {:message "Successfully added branches"}
+          (ok {:message "Successfully added branches"})
           (catch Exception ex
             (writelog/op-log! (str "ERROR : " (.getMessage ex)))
             {:error {:message "Something went wrong on our end"}}))
         {:error {:message "Only merchant creator can add branches!"}}))
-    {:error {:message "Unauthorized operation not permitted"}}))
+    (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
 
 (defn update-branches?
   [token branches-name address reward-rates asset-code minimum-spend approval-code is-active]
@@ -42,9 +43,9 @@
                                                :MINIMUM_SPEND minimum-spend
                                                :APPROVAL_CODE approval-code
                                                :IS_ACTIVE is-active})
-            {:message "Successfully updated branches"}
+            (ok {:message "Successfully updated branches"})
             (catch Exception ex
               (writelog/op-log! (str "ERROR : " (.getMessage ex)))
               {:error {:message "Something went wrong on our end"}})))
         {:error {:message "Only merchant creator can update branches!"}}))
-    {:error {:message "Unauthorized operation not permitted"}}))
+    (unauthorized {:error {:message "Unauthorized operation not permitted"}})))

@@ -7,7 +7,9 @@
             [zeetomic-core.util.ed :as ed]
             [clojure.data.json :as json]
             [zeetomic-core.operation.addasset :as addasset]
-            [aero.core :refer (read-config)]))
+            [aero.core :refer (read-config)]
+            [ring.util.http-response :refer :all]
+            [zeetomic-core.util.writelog :as writelog]))
 
 (def env (read-config ".config.edn"))
 
@@ -35,10 +37,10 @@
         (future (Thread/sleep 10000)
                 (users/setup-user-wallet conn/db {:ID (get (auth/token? token) :_id) :WALLET (get @xwallet :wallet) :SEED (ed/encrypt (get @xwallet :seed)) :PIN (hashers/derive pin)})
                 (addasset/add-assets! (get @xwallet :seed) "ZTO" (get env :assetIssuer)))
-        {:message {:wallet (get @xwallet :wallet) :seed (get @xwallet :seed)}}
+        (ok {:message {:wallet (get @xwallet :wallet) :seed (get @xwallet :seed)}})
         (catch Exception ex
-          (.getMessage ex)))
+          (writelog/op-log! (str "ERROR : " (.getMessage ex)))
+          {:error {:message "Internal server error"}}))
     ; False
-      {:message "Opp! look like you already had a wallet"})
-
-    {:error {:message "Internal server error"}}))
+      (ok {:message "Opp! look like you already had a wallet"}))
+    (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
