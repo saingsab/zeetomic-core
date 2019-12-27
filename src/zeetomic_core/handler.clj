@@ -25,8 +25,8 @@
   {:pin s/Str})
 
 (s/defschema Add-asset
-  {:asset-code s/Str
-   :asset-ssuer s/Str})
+  {:asset_code s/Str
+   :asset_ssuer s/Str})
 
 (s/defschema Send-payment
   {:asset-code s/Str
@@ -39,29 +39,29 @@
    :password s/Str})
 
 (s/defschema User-profile
-  {:first-name s/Str
-   :mid-name s/Str
-   :last-name s/Str
+  {:first_name s/Str
+   :mid_name s/Str
+   :last_name s/Str
    :gender s/Str})
 
 (s/defschema User-coinfirm
   {:phone s/Str
-   :verification-code s/Str})
+   :verification_code s/Str})
 
 (s/defschema Merchant
-  {:merchant-name s/Str})
+  {:merchant_name s/Str})
 
 (s/defschema Merchants
-  {:merchant-name s/Str
-   :short-name s/Str})
+  {:merchant_name s/Str
+   :short_name s/Str})
 
 (s/defschema Update-merchant
   {:id s/Str
-   :merchant-name s/Str
-   :short-name s/Str})
+   :merchant_name s/Str
+   :short_name s/Str})
 
 (s/defschema Receipt
-  {:receipt-no s/Str
+  {:receipt_no s/Str
    :amount s/Str
    :location s/Str})
 
@@ -118,9 +118,9 @@
        :body [profile User-profile]
        :summary "setup user profile information"
        (userinfo/setup-profile! authorization
-                                (get profile :first-name)
-                                (get profile :mid-name)
-                                (get profile :last-name)
+                                (get profile :first_name)
+                                (get profile :mid_name)
+                                (get profile :last_name)
                                 (get profile :gender)))
 
      (GET "/userprofile" []
@@ -153,14 +153,14 @@
        :body [add-asset Add-asset]
        :header-params [authorization :- s/Str]
        (addasset/accept-asset? authorization
-                               (get add-asset :asset-code)
-                               (get add-asset :asset-ssuer)))
+                               (get add-asset :asset_code)
+                               (get add-asset :asset_ssuer)))
 
      (POST "/sendpayment" []
        :header-params [authorization :- s/Str]
        :body [send-payment Send-payment]
        (pay/pay! authorization
-                 (get send-payment :asset-code)
+                 (get send-payment :asset_code)
                  (get send-payment :destination)
                  (get send-payment :amount)
                  (get send-payment :memo)))
@@ -169,23 +169,23 @@
        :header-params [authorization :- s/Str]
        :body [merchant Merchants]
        (merchants/add-merchant! authorization
-                                (get merchant :merchant-name)
-                                (get merchant :short-name)))
+                                (get merchant :merchant_name)
+                                (get merchant :short_name)))
 
      (POST "/update-merchant" []
        :header-params [authorization :- s/Str]
        :body [update-merchant Update-merchant]
        (merchants/update-merchant? authorization
                                    (get update-merchant :id)
-                                   (get update-merchant :merchant-name)
-                                   (get update-merchant :short-name)))
+                                   (get update-merchant :merchant_name)
+                                   (get update-merchant :short_name)))
 
      (POST "/get-merchant-by-name" []
        :header-params [authorization :- s/Str]
        :summary "Get Merchant information by name"
        :body [merchant Merchant]
        (merchants/get-merchant-by-name authorization
-                                       (get merchant :merchant-name)))
+                                       (get merchant :merchant_name)))
 
      (GET "/get-merchant" []
        :header-params [authorization :- s/Str]
@@ -201,7 +201,7 @@
        :header-params [authorization :- s/Str]
        :body [receipt Receipt]
        (receipts/add-receipt! authorization
-                              (get receipt :receipt-no)
+                              (get receipt :receipt_no)
                               (get receipt :amount)
                               (get receipt :location)))
 

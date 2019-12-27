@@ -20,6 +20,7 @@
                        {:form-params {:dkey (str (get env :dkey))}
                         :content-type :json}) :body) :key-fn keyword)
     (catch Exception ex
+      (writelog/op-log! (str "ERROR : " (.getMessage ex)))
       "Internal server error")))
 
 (def xwallet (atom {:wallet "" :seed ""}))
@@ -30,7 +31,7 @@
 (defn gen-wallet
   [token pin]
   (if (= (auth/authorized? token) true)
-    (if (nil? (is-wallet-nil? (get (auth/token? token) :_id)))
+    (if (= true (is-wallet-nil? (get (auth/token? token) :_id)))
     ; True
       (try
         (reset! xwallet (wallets))
