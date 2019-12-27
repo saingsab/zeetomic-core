@@ -1,6 +1,7 @@
 log/
 postgres-data/
 /target
+dbs/
 .env
 .lein-env
 .lein-repl-history
