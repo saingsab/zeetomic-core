@@ -54,18 +54,18 @@ services:
     working_dir: /home/node/app
     command: >
       sh -c "npm install -g pm2 && npm install && pm2-runtime server.js --watch"
-  # apiserver:
-  #   image: openjdk:13
-  #   container_name: "zeetomic-api-testnet"
-  #   restart: always
-  #   depends_on:
-  #     - node-testnet
-  #   ports:
-  #     - 3001:3000
-  #   volumes:
-  #     - ./:/usr/src/myapp
-  #   networks:
-  #     - web
-  #     - internal
-  #   working_dir: /usr/src/myapp
-  #   command: sh -c "java -jar apis/server.jar"
+  apiserver:
+    image: openjdk:13
+    container_name: "zeetomic-api-testnet"
+    restart: always
+    depends_on:
+      - node-testnet
+    ports:
+      - 3001:3000
+    volumes:
+      - ./:/usr/src/myapp
+    networks:
+      - web
+      - internal
+    working_dir: /usr/src/myapp
+    command: sh -c "java -jar apis/server.jar"
