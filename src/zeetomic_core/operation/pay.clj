@@ -88,3 +88,21 @@
       {:error {:message "Something went wrong on our end"}})))
 
 
+(defn portforlio [token]
+  (if (= (auth/authorized? token) true)
+    (try
+      (let [wallet (get (users/get-users-by-id conn/db {:ID (get (auth/token? token) :_id)}) :wallet)]
+        (ok (get (json/read-str (get (client/get (str (get env :horizon) "/accounts/" wallet)) :body) :key-fn keyword) :balances)))
+      (catch Exception ex
+        (writelog/tx-log! (str "FAILDED : fetch portforlio " (.getMessage ex)))))
+    (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
+
+(defn trx-hostory [token]
+  (if (= (auth/authorized? token) true)
+    (try
+      (let [wallet (get (users/get-users-by-id conn/db {:ID (get (auth/token? token) :_id)}) :wallet)]
+        (println wallet)
+        (ok (get (get (json/read-str (get (client/get (str (get env :horizon) "/accounts/" wallet "/operations?order=desc")) :body) :key-fn keyword) :_embedded) :records)))
+      (catch Exception ex
+        (writelog/tx-log! (str "FAILDED : fetch tx history " (.getMessage ex)))))
+    (unauthorized {:error {:message "Unauthorized operation not permitted"}})))

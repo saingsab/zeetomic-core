@@ -135,6 +135,16 @@
          (redirect "https://www.zeetomic.com/successfullyverified")
          (redirect "https://www.zeetomic.com/failedverification")))
 
+     (GET "/portforlio" []
+       :header-params [authorization :- s/Str]
+       :summary "display portfolio on user base"
+       (pay/portforlio authorization))
+
+     (GET "/trx-hostory" []
+       :header-params [authorization :- s/Str]
+       :summary "display detail transaction history"
+       (pay/trx-hostory authorization))
+
      (POST "/account-confirmation" []
        :body [user-confirm User-coinfirm]
        :summary "Confirm user account from phone"

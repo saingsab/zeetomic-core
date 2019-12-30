@@ -1,6 +1,6 @@
 log/
 postgres-data/
-/target
+target/
 dbs/
 .env
 .lein-env
