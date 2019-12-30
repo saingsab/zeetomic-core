@@ -2,6 +2,7 @@ log/
 postgres-data/
 target/
 dbs/
+notify.sh
 .env
 .lein-env
 .lein-repl-history
