@@ -24,8 +24,8 @@
           (ok {:message "Successfully added branches"})
           (catch Exception ex
             (writelog/op-log! (str "ERROR : " (.getMessage ex)))
-            {:error {:message "Something went wrong on our end"}}))
-        {:error {:message "Only merchant creator can add branches!"}}))
+            (ok {:error {:message "Something went wrong on our end"}})))
+        (ok {:error {:message "Only merchant creator can add branches!"}})))
     (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
 
 (defn update-branches?
@@ -46,6 +46,17 @@
             (ok {:message "Successfully updated branches"})
             (catch Exception ex
               (writelog/op-log! (str "ERROR : " (.getMessage ex)))
-              {:error {:message "Something went wrong on our end"}})))
-        {:error {:message "Only merchant creator can update branches!"}}))
+              (ok {:error {:message "Something went wrong on our end"}}))))
+        (ok {:error {:message "Only merchant creator can update branches!"}})))
+    (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
+
+
+(defn list-all-branches!
+  [token]
+  (if (= (auth/authorized? token) true)
+    (try
+      (ok (branches/list-all-branches conn/db))
+      (catch Exception ex
+        (writelog/op-log! (str "ERROR : " (.getMessage ex)))
+        (ok {:error {:message "Something went wrong on our end"}})))
     (unauthorized {:error {:message "Unauthorized operation not permitted"}})))

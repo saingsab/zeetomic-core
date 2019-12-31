@@ -15,6 +15,7 @@
             [zeetomic-core.operation.addasset :as addasset]
             [zeetomic-core.operation.pay :as pay]
             [zeetomic-core.loyalty.merchant :as merchants]
+            [zeetomic-core.loyalty.branches :as branches]
             [zeetomic_core.loyalty.receipt :as receipts]))
 
 (s/defschema User-mail
@@ -59,6 +60,25 @@
   {:id s/Str
    :merchant_name s/Str
    :short_name s/Str})
+
+(s/defschema Branches
+  {:merchant_id s/Str
+   :branches_name s/Str
+   :address s/Str
+   :reward_rates s/Str
+   :asset_code s/Str
+   :minimum_spend s/Str
+   :approval_code s/Str})
+
+(s/defschema Update-Branches
+  {:branches_name s/Str
+   :address s/Str
+   :reward_rates s/Str
+   :asset_code s/Str
+   :minimum_spend s/Str
+   :approval_code s/Str
+   :is-active s/Bool})
+
 
 (s/defschema Receipt
   {:receipt_no s/Str
@@ -140,7 +160,7 @@
        :summary "display portfolio on user base"
        (pay/portforlio authorization))
 
-     (GET "/trx-hostory" []
+     (GET "/trx-history" []
        :header-params [authorization :- s/Str]
        :summary "display detail transaction history"
        (pay/trx-hostory authorization))
@@ -214,6 +234,33 @@
                               (get receipt :receipt_no)
                               (get receipt :amount)
                               (get receipt :location)))
+
+     (POST "/add-branches" []
+       :header-params [authorization :- s/Str]
+       :body [branches Branches]
+       (branches/add-branches! authorization
+                               (get branches :merchant_id)
+                               (get branches :branches_name)
+                               (get branches :address)
+                               (get branches :reward_rates)
+                               (get branches :asset_code)
+                               (get branches :minimum_spend)
+                               (get branches :approval_code)))
+
+      (POST "/update-branches" []
+        :header-params [authorization :- s/Str]
+        :body [update-branches Update-Branches]
+       (branches/update-branches? authorization
+                                  (get update-branches :branches_name)
+                                  (get update-branches :address)
+                                  (get update-branches :reward_rates)
+                                  (get update-branches :asset_code)
+                                  (get update-branches :minimum_spend)
+                                  (get update-branches :approval_code)
+                                  (get update-branches :is-active)))
+      (GET "/get-all-branches" []
+        :header-params [authorization :- s/Str]
+        (branches/list-all-branches! authorization))
 
      (GET "/get-receipt" []
        :header-params [authorization :- s/Str]

@@ -13,7 +13,7 @@
       (ok {:message "Successfully added merchant"})
       (catch Exception ex
         (writelog/op-log! (.getMessage ex))
-        {:error {:message "Something went wrong on our end"}}))
+        (ok {:error {:message "Something went wrong on our end"}})))
     (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
 
 (defn update-merchant?
@@ -24,7 +24,7 @@
       (ok {:message "Successfully updated merchant"})
       (catch Exception ex
         (writelog/op-log! (.getMessage ex))
-        {:error {:message "Something went wrong on our end"}}))
+        (ok {:error {:message "Something went wrong on our end"}})))
     (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
 
 
@@ -32,28 +32,28 @@
   [token merchant-name]
   (if (= (auth/authorized? token) true)
     (try
-      (merchant/get-merchants-by-name conn/db {:MERCHANT_NAME merchant-name})
+      (ok (merchant/get-merchants-by-name conn/db {:MERCHANT_NAME merchant-name}))
       (catch Exception ex
         (writelog/op-log! (.getMessage ex))
-        {:error {:message "Something went wrong on our end"}}))
+        (ok {:error {:message "Something went wrong on our end"}})))
     (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
 
 (defn get-merchant-by-owner
   [token]
   (if (= (auth/authorized? token) true)
     (try
-      (merchant/get-merchants-by-owner conn/db {:CREATED_BY (get (auth/token? token) :_id)})
+      (ok (merchant/get-merchants-by-owner conn/db {:CREATED_BY (get (auth/token? token) :_id)}))
       (catch Exception ex
         (writelog/op-log! (.getMessage ex))
-        {:error {:message "Something went wrong on our end"}}))
+        (ok {:error {:message "Something went wrong on our end"}})))
     (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
 
 (defn get-all-merchants
   [token]
   (if (= (auth/authorized? token) true)
     (try
-      (merchant/get-all-merchants conn/db)
+      (ok (merchant/get-all-merchants conn/db))
       (catch Exception ex
         (writelog/op-log! (.getMessage ex))
-        {:error {:message "Something went wrong on our end"}}))
+        (ok {:error {:message "Something went wrong on our end"}})))
     (unauthorized {:error {:message "Unauthorized operation not permitted"}})))

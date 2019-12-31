@@ -37,3 +37,12 @@ SELECT * FROM BRANCHES
 -- :name get-branches-by-name :? :1
 SELECT * FROM BRANCHES
 WHERE BRANCHES_NAME = :BRANCHES_NAME
+
+--:name list-all-branches :? :*
+SELECT BRANCHES_NAME,
+        ADDRESS,
+        REWARD_RATES,
+        ASSET_CODE,
+        MINIMUM_SPEND,
+        IS_ACTIVE
+ FROM BRANCHES

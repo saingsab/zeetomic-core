@@ -40,7 +40,7 @@
         (ok {:message "Your transaction has been submitted!"})
         (catch Exception ex
           (writelog/op-log! (str "ERROR : " (.getMessage ex)))
-          {:error {:message "Something went wrong on our end"}})))
+          (ok {:error {:message "Something went wrong on our end"}}))))
     (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
 
 (defn get-receipt
@@ -50,5 +50,5 @@
       (ok (receipt/get-receipt-by-owner conn/db {:ID (get (auth/token? token) :_id)}))
       (catch Exception ex
         (writelog/op-log! (str "ERROR : " (.getMessage ex)))
-        {:error {:message "Something went wrong on our end"}}))
+        (ok {:error {:message "Something went wrong on our end"}})))
     (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
