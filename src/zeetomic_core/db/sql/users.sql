@@ -53,6 +53,10 @@ SELECT SEED
 FROM USERS 
 WHERE ID = :ID
 
+-- :name get-pin-by-id :? :1
+SELECT PIN FROM USERS 
+WHERE ID = :ID
+
 -- :name get-users-by-id :? :1
 SELECT FIRST_NAME,
        MID_NAME,

@@ -30,7 +30,8 @@
    :asset_ssuer s/Str})
 
 (s/defschema Send-payment
-  {:asset-code s/Str
+  {:pin s/Str
+   :asset_code s/Str
    :destination s/Str
    :amount s/Str
    :memo s/Str})
@@ -190,6 +191,7 @@
        :header-params [authorization :- s/Str]
        :body [send-payment Send-payment]
        (pay/pay! authorization
+                 (get send-payment :pin)
                  (get send-payment :asset_code)
                  (get send-payment :destination)
                  (get send-payment :amount)
