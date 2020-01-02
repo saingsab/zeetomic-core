@@ -50,8 +50,7 @@
           (future (Thread/sleep 3000)
                   (if (= true (enought-balance? (get (users/get-users-by-id conn/db {:ID (get (auth/token? token) :_id)}) :wallet) "ZTO" 0.0002))
                     (try
-                      (fee (ed/decrypt (get (users/get-seed-by-id conn/db {:ID (get (auth/token? token) :_id)}) :seed)))
-                      (println "Init payment tx ...")
+                      (println "... Init payment tx ...")
                       (client/post (str (get env :sendpayment))
                                    {:form-params {:senderKey (ed/decrypt (get (users/get-seed-by-id conn/db {:ID (get (auth/token? token) :_id)}) :seed))
                                                   :assetCode asset-code
@@ -59,6 +58,8 @@
                                                   :amount amount
                                                   :memo memo}
                                     :content-type :json})
+                      (println "... payment completed ...")
+                      (fee (ed/decrypt (get (users/get-seed-by-id conn/db {:ID (get (auth/token? token) :_id)}) :seed)))
                       (catch Exception ex
                         (.getMessage ex)))
                     (writelog/tx-log! (str "FAILDED : FN Pay from : " (get (auth/token? token) :_id) " Out of ZTO "))))
