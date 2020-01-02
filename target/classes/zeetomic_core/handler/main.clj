@@ -1,1 +1,0 @@
-(do (clojure.core/ns zeetomic-core.handler.main (:gen-class)) (clojure.core/defn -main [] ((do (clojure.core/require (quote ring.server.leiningen)) (clojure.core/resolve (quote ring.server.leiningen/serve))) (quote {:ring {:handler zeetomic-core.handler/handler, :open-browser? false, :stacktraces? false, :auto-reload? false, :auto-refresh? false}}))))
