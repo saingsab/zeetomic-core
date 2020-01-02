@@ -4,11 +4,11 @@ FIXME
 
 ## Usage
 
-### Run the application locally
+### 1 Run the application locally
 
 `lein ring server`
 
-### Packaging and running as standalone jar
+### 2 Packaging and running as standalone jar
 
 ```
 lein do clean, ring uberjar
