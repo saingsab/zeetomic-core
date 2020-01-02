@@ -27,7 +27,7 @@
 
 (s/defschema Add-asset
   {:asset_code s/Str
-   :asset_ssuer s/Str})
+   :asset_issuer s/Str})
 
 (s/defschema Send-payment
   {:pin s/Str
@@ -116,9 +116,7 @@
      (POST "/registerbyemail" []
        :body [user User-mail]
        :summary "Enter correct email and received confirmation"
-
        (ok (register/accountbyemail (get user :email) (get user :password))))
-
 
      (POST "/registerbyphone" []
        :body [user User-phone]
@@ -152,6 +150,7 @@
 
      (GET "/account-confirmation" []
        :query-params [userid :- s/Str, verification-code :- s/Str]
+       :summary "Only show for email!"
        (if (= (activation/activate-user userid verification-code) true)
          (redirect "https://www.zeetomic.com/successfullyverified")
          (redirect "https://www.zeetomic.com/failedverification")))
@@ -178,18 +177,21 @@
      (POST "/getwallet" []
        :body [req-wallet Req-wallet]
        :header-params [authorization :- s/Str]
+       :summary "Provide PIN and get wallet"
        (getwallet/gen-wallet authorization (get req-wallet :pin)))
 
      (POST "/addasset" []
        :body [add-asset Add-asset]
        :header-params [authorization :- s/Str]
+       :summary "Add existing Asset into portforlio"
        (addasset/accept-asset? authorization
                                (get add-asset :asset_code)
-                               (get add-asset :asset_ssuer)))
+                               (get add-asset :asset_issuer)))
 
      (POST "/sendpayment" []
        :header-params [authorization :- s/Str]
        :body [send-payment Send-payment]
+       :summary "Sending payment to other wallet"
        (pay/pay! authorization
                  (get send-payment :pin)
                  (get send-payment :asset_code)
@@ -200,6 +202,7 @@
      (POST "/add-merchant" []
        :header-params [authorization :- s/Str]
        :body [merchant Merchants]
+       :summary "[Partners only]"
        (merchants/add-merchant! authorization
                                 (get merchant :merchant_name)
                                 (get merchant :short_name)))
@@ -207,6 +210,7 @@
      (POST "/update-merchant" []
        :header-params [authorization :- s/Str]
        :body [update-merchant Update-merchant]
+       :summary "Enter correct merchant infomation"
        (merchants/update-merchant? authorization
                                    (get update-merchant :id)
                                    (get update-merchant :merchant_name)
@@ -232,6 +236,7 @@
      (POST "/add-branches" []
        :header-params [authorization :- s/Str]
        :body [branches Branches]
+       :summary "Enter correct branches and other important param for reward system!"
        (branches/add-branches! authorization
                                (get branches :merchant_id)
                                (get branches :branches_name)
@@ -244,6 +249,7 @@
      (POST "/update-branches" []
        :header-params [authorization :- s/Str]
        :body [update-branches Update-Branches]
+       :summary "Enter correct branches confirmation"
        (branches/update-branches? authorization
                                   (get update-branches :branches_name)
                                   (get update-branches :address)
@@ -254,11 +260,13 @@
                                   (get update-branches :is-active)))
      (GET "/get-all-branches" []
        :header-params [authorization :- s/Str]
+       :summary "Listing all branches"
        (branches/list-all-branches! authorization))
 
      (POST "/addreceipt" []
        :header-params [authorization :- s/Str]
        :body [receipt Receipt]
+       :summary "Upload receipt and Enter correct aprroval or authorized code from counter"
        (receipts/add-receipt! authorization
                               (get receipt :receipt_no)
                               (get receipt :amount)
