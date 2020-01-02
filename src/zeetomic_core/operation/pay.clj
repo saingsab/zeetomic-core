@@ -79,13 +79,13 @@
       (try
         (fee (ed/decrypt (get (users/get-seed-by-id conn/db {:ID (get sender :created_by)}) :seed)))
         (receipt/update-receipt-status conn/db {:ID (str txid) :STATUS "Completed"})
-        (client/post (str (get env :sendpayment))
-                     {:form-params {:senderKey (ed/decrypt (get (users/get-seed-by-id conn/db {:ID (get sender :created_by)}) :seed))
-                                    :assetCode (get sender :asset_code)
-                                    :destination destination
-                                    :amount amount
-                                    :memo "Reward!"}
-                      :content-type :json})
+        (println (client/post (str (get env :sendpayment))
+                              {:form-params {:senderKey (ed/decrypt (get (users/get-seed-by-id conn/db {:ID (get sender :created_by)}) :seed))
+                                             :assetCode (get sender :asset_code)
+                                             :destination destination
+                                             :amount amount
+                                             :memo "Reward!"}
+                               :content-type :json}))
 
         (catch Exception ex
           (writelog/tx-log! (str "FAILDED : REWARD! From " (get sender :branches_name) " To : " (.getMessage ex)))))
