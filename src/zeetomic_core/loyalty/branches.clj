@@ -38,9 +38,9 @@
           (try
             (branches/update-branches conn/db {:ID branches-id
                                                :ADDRESS address
-                                               :REWARD_RATES reward-rates
+                                               :REWARD_RATES (Float. reward-rates)
                                                :ASSET_CODE  asset-code
-                                               :MINIMUM_SPEND minimum-spend
+                                               :MINIMUM_SPEND (Float. minimum-spend)
                                                :APPROVAL_CODE approval-code
                                                :IS_ACTIVE is-active})
             (ok {:message "Successfully updated branches"})
