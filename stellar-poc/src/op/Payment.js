@@ -45,7 +45,7 @@ async function SendPayment(Seed, _assetCode, destination, amount, memo) {
     // Submit the transaction to the Stellar network.
     const transactionResult = await server.submitTransaction(transaction);
     // console.log(transactionResult);
-    console.log("Payment sent", transactionResult.hash);
+    console.log(transactionResult.hash);
     return transactionResult.hash, `Your payment is completed!`;
   } catch (e) {
     return `Oh no! Something went wrong.${e}`;

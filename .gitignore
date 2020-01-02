@@ -1,8 +1,5 @@
-log/
-postgres-data/
 target/
-target/classes/META-INF/maven/zeetomic-core/zeetomic-core/
-target/stale/
+log/
 dbs/
 notify.sh
 .env
