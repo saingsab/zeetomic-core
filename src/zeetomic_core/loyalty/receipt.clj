@@ -36,7 +36,8 @@
             (reset! txid (java.util.UUID/randomUUID))
             (future (Thread/sleep 3000)
                     (try
-                      (pay/reward! location (get (users/get-users-by-id conn/db {:ID created-by}) :wallet) (str (reward location (Float. amount))) @txid)
+                      (future (Thread/sleep 3000)
+                              (pay/reward! location (get (users/get-users-by-id conn/db {:ID created-by}) :wallet) (str (reward location (Float. amount))) @txid))
                       (receipt/add-receipt conn/db {:ID @txid
                                                     :RECEIPT_NO receipt-no
                                                     :AMOUNT (Float. amount)
