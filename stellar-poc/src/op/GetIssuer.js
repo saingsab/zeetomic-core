@@ -10,14 +10,12 @@ async function GetIssuer(_assetCode, _wallet) {
     return `Error ${payload.title}`;
   }
   for (i = 0; i < payload.balances.length; i++) {
-    // console.log(payload).balances[i];
-    if (payload.balances[i].asset_code != _assetCode) {
-      return `Undefined asset please make sure ${_assetCode} is under your portfolio`;
+    if (payload.balances[i].asset_code === _assetCode) {
+      return {
+        issuer: payload.balances[i].asset_issuer,
+        balance: payload.balances[i].balance
+      };
     }
-    return {
-      issuer: payload.balances[i].asset_issuer,
-      balance: payload.balances[i].balance
-    };
   }
 }
 

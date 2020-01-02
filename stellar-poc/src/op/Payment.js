@@ -52,13 +52,3 @@ async function SendPayment(Seed, _assetCode, destination, amount, memo) {
   }
 }
 module.exports = SendPayment;
-
-// SendPayment(
-//   "SBSACIMUYVTWTMXKBVYD2GTN4P5QGW4U7XYNDD6XUCGTA5QSGXIPHRMB",
-//   "ZTO",
-//   "GB4KPGXQ6UJLO6AIHQ7SS4KIALVCCACVEU3BQQVFXXFILGS5YZXXRKBD",
-//   "1.01",
-//   "New FN Pay"
-// ).catch(err => {
-//   console.log("Payment Fail ", err.message);
-// });

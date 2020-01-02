@@ -18,7 +18,6 @@ services:
     networks:
       - internal
       - web
-
   adminer:
     image: adminer
     restart: always
