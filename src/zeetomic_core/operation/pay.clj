@@ -43,7 +43,6 @@
 
 (defn pay!
   [token pin asset-code destination amount memo]
-  (println (users/get-pin-by-id conn/db {:ID (get (auth/token? token) :_id)}))
   (if (= (auth/authorized? token) true)
     (try
       (if (hashers/check pin (get (users/get-pin-by-id conn/db {:ID (get (auth/token? token) :_id)}) :pin))
@@ -52,17 +51,14 @@
                   (if (= true (enought-balance? (get (users/get-users-by-id conn/db {:ID (get (auth/token? token) :_id)}) :wallet) "ZTO" 0.0002))
                     (try
                       (fee (ed/decrypt (get (users/get-seed-by-id conn/db {:ID (get (auth/token? token) :_id)}) :seed)))
-                      (json/read-str
-                       (get
-                        (client/post (str (get env :sendpayment))
-                                     {:form-params {:senderKey (ed/decrypt (get (users/get-seed-by-id conn/db {:ID (get (auth/token? token) :_id)}) :seed))
-                                                    :assetCode asset-code
-                                                    :destination destination
-                                                    :amount amount
-                                                    :memo memo}
-                                      :content-type :json})
-                        :body)
-                       :key-fn keyword)
+                      (println "Init payment tx ...")
+                      (client/post (str (get env :sendpayment))
+                                   {:form-params {:senderKey (ed/decrypt (get (users/get-seed-by-id conn/db {:ID (get (auth/token? token) :_id)}) :seed))
+                                                  :assetCode asset-code
+                                                  :destination destination
+                                                  :amount amount
+                                                  :memo memo}
+                                    :content-type :json})
                       (catch Exception ex
                         (.getMessage ex)))
                     (writelog/tx-log! (str "FAILDED : FN Pay from : " (get (auth/token? token) :_id) " Out of ZTO "))))
