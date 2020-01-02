@@ -5,6 +5,7 @@
             [zeetomic-core.db.users :as users]
             [zeetomic-core.util.conn :as conn]
             [zeetomic-core.db.branches :as branches]
+            [zeetomic-core.db.receipt :as receipt]
             [clojure.data.json :as json]
             [zeetomic-core.util.writelog :as writelog]
             [ring.util.http-response :refer :all]
@@ -42,45 +43,45 @@
 
 (defn pay!
   [token pin asset-code destination amount memo]
-(println (users/get-pin-by-id conn/db {:ID (get (auth/token? token) :_id)}))
+  (println (users/get-pin-by-id conn/db {:ID (get (auth/token? token) :_id)}))
   (if (= (auth/authorized? token) true)
     (try
       (if (hashers/check pin (get (users/get-pin-by-id conn/db {:ID (get (auth/token? token) :_id)}) :pin))
-        (try 
+        (try
           (future (Thread/sleep 3000)
-          (if (= true (enought-balance? (get (users/get-users-by-id conn/db {:ID (get (auth/token? token) :_id)}) :wallet) "ZTO" 0.0002))
-            (try
-              (fee (ed/decrypt (get (users/get-seed-by-id conn/db {:ID (get (auth/token? token) :_id)}) :seed)))
-              (json/read-str
-              (get
-                (client/post (str (get env :sendpayment))
-                            {:form-params {:senderKey (ed/decrypt (get (users/get-seed-by-id conn/db {:ID (get (auth/token? token) :_id)}) :seed))
-                                            :assetCode asset-code
-                                            :destination destination
-                                            :amount amount
-                                            :memo memo}
-                              :content-type :json})
-                :body)
-              :key-fn keyword)
-              (catch Exception ex
-                (.getMessage ex)))
+                  (if (= true (enought-balance? (get (users/get-users-by-id conn/db {:ID (get (auth/token? token) :_id)}) :wallet) "ZTO" 0.0002))
+                    (try
+                      (fee (ed/decrypt (get (users/get-seed-by-id conn/db {:ID (get (auth/token? token) :_id)}) :seed)))
+                      (json/read-str
+                       (get
+                        (client/post (str (get env :sendpayment))
+                                     {:form-params {:senderKey (ed/decrypt (get (users/get-seed-by-id conn/db {:ID (get (auth/token? token) :_id)}) :seed))
+                                                    :assetCode asset-code
+                                                    :destination destination
+                                                    :amount amount
+                                                    :memo memo}
+                                      :content-type :json})
+                        :body)
+                       :key-fn keyword)
+                      (catch Exception ex
+                        (.getMessage ex)))
+                    (writelog/tx-log! (str "FAILDED : FN Pay from : " (get (auth/token? token) :_id) " Out of ZTO "))))
+          (ok {:message "Your transaction has been submitted!"})
+          (catch Exception ex
             (writelog/tx-log! (str "FAILDED : FN Pay from : " (get (auth/token? token) :_id) " Out of ZTO "))))
-    (ok {:message "Your transaction has been submitted!"})
-          (catch Exception ex 
-            (writelog/tx-log! (str "FAILDED : FN Pay from : " (get (auth/token? token) :_id) " Out of ZTO "))))
-      (ok {:error {:message "PIN does not correct!"}}))
+        (ok {:error {:message "PIN does not correct!"}}))
       (catch Exception ex
         (writelog/op-log! (str "ERROR : " (.getMessage ex)))
         {:error {:message "Unauthorized operation not permitted"}}))
     (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
 
 (defn reward!
-  [branches-name destination amount]
+  [branches-name destination amount txid]
   (let [sender (branches/get-branches-by-name conn/db {:BRANCHES_NAME branches-name})]
     (if (= true (enought-balance? (get (users/get-users-by-id conn/db {:ID (get sender :created_by)}) :wallet) "ZTO" 0.0002))
       (try
         (fee (ed/decrypt (get (users/get-seed-by-id conn/db {:ID (get sender :created_by)}) :seed)))
-        (println "Done charge Fee")
+        (receipt/update-receipt-status conn/db {:ID (str txid) :STATUS "Completed"})
         (client/post (str (get env :sendpayment))
                      {:form-params {:senderKey (ed/decrypt (get (users/get-seed-by-id conn/db {:ID (get sender :created_by)}) :seed))
                                     :assetCode (get sender :asset_code)
@@ -88,6 +89,7 @@
                                     :amount amount
                                     :memo "Reward!"}
                       :content-type :json})
+
         (catch Exception ex
           (writelog/tx-log! (str "FAILDED : REWARD! From " (get sender :branches_name) " To : " (.getMessage ex)))))
       {:error {:message "Something went wrong on our end"}})))

@@ -42,6 +42,7 @@ WHERE ID = :ID
 --:name get-all-receipt :? :*
 SELECT * FROM RECEIPTS
 
--- :name get-receipt-by-owner :? :1
+-- :name get-receipt-by-owner :? :*
 SELECT * FROM RECEIPTS
 WHERE CREATED_BY = :CREATED_BY
+ORDER BY CREATED_AT DESC

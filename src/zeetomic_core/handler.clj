@@ -84,7 +84,8 @@
 (s/defschema Receipt
   {:receipt_no s/Str
    :amount s/Str
-   :location s/Str})
+   :location s/Str
+   :approval_code s/Str})
 
 (def app
   (api
@@ -151,7 +152,6 @@
 
      (GET "/account-confirmation" []
        :query-params [userid :- s/Str, verification-code :- s/Str]
-      ;  (println (activation/activate-user userid verification-code))
        (if (= (activation/activate-user userid verification-code) true)
          (redirect "https://www.zeetomic.com/successfullyverified")
          (redirect "https://www.zeetomic.com/failedverification")))
@@ -229,14 +229,6 @@
        :summary "List all merchants"
        (merchants/get-all-merchants authorization))
 
-     (POST "/addreceipt" []
-       :header-params [authorization :- s/Str]
-       :body [receipt Receipt]
-       (receipts/add-receipt! authorization
-                              (get receipt :receipt_no)
-                              (get receipt :amount)
-                              (get receipt :location)))
-
      (POST "/add-branches" []
        :header-params [authorization :- s/Str]
        :body [branches Branches]
@@ -249,9 +241,9 @@
                                (get branches :minimum_spend)
                                (get branches :approval_code)))
 
-      (POST "/update-branches" []
-        :header-params [authorization :- s/Str]
-        :body [update-branches Update-Branches]
+     (POST "/update-branches" []
+       :header-params [authorization :- s/Str]
+       :body [update-branches Update-Branches]
        (branches/update-branches? authorization
                                   (get update-branches :branches_name)
                                   (get update-branches :address)
@@ -260,9 +252,18 @@
                                   (get update-branches :minimum_spend)
                                   (get update-branches :approval_code)
                                   (get update-branches :is-active)))
-      (GET "/get-all-branches" []
-        :header-params [authorization :- s/Str]
-        (branches/list-all-branches! authorization))
+     (GET "/get-all-branches" []
+       :header-params [authorization :- s/Str]
+       (branches/list-all-branches! authorization))
+
+     (POST "/addreceipt" []
+       :header-params [authorization :- s/Str]
+       :body [receipt Receipt]
+       (receipts/add-receipt! authorization
+                              (get receipt :receipt_no)
+                              (get receipt :amount)
+                              (get receipt :location)
+                              (get receipt :approval_code)))
 
      (GET "/get-receipt" []
        :header-params [authorization :- s/Str]
