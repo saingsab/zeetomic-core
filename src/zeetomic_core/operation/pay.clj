@@ -41,6 +41,20 @@
                {:form-params {:seed seed}
                 :content-type :json}))
 
+(defn get-portforlio
+  [wallet]
+  (try
+    (json/read-str (get (client/get (str (get env :horizon) "/accounts/" wallet "/operations?order=desc")) :body) :key-fn keyword)
+    (catch Exception ex
+      {:error {:message "Look like you don't have a wallet yet!"}})))
+
+(defn get-trx-hostory
+  [wallet]
+  (try
+    (get (get (json/read-str (get (client/get (str (get env :horizon) "/accounts/" wallet "/operations?order=desc")) :body) :key-fn keyword) :_embedded) :records)
+    (catch Exception ex
+      {:error {:message "Look like you don't have a wallet yet!"}})))
+
 (defn pay!
   [token pin asset-code destination amount memo]
   (if (= (auth/authorized? token) true)
@@ -96,7 +110,7 @@
   (if (= (auth/authorized? token) true)
     (try
       (let [wallet (get (users/get-users-by-id conn/db {:ID (get (auth/token? token) :_id)}) :wallet)]
-        (ok (get (json/read-str (get (client/get (str (get env :horizon) "/accounts/" wallet)) :body) :key-fn keyword) :balances)))
+        (ok (get-portforlio wallet)))
       (catch Exception ex
         (writelog/tx-log! (str "FAILDED : fetch portforlio " (.getMessage ex)))))
     (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
@@ -105,8 +119,7 @@
   (if (= (auth/authorized? token) true)
     (try
       (let [wallet (get (users/get-users-by-id conn/db {:ID (get (auth/token? token) :_id)}) :wallet)]
-        (println wallet)
-        (ok (get (get (json/read-str (get (client/get (str (get env :horizon) "/accounts/" wallet "/operations?order=desc")) :body) :key-fn keyword) :_embedded) :records)))
+        (ok (get-trx-hostory wallet)))
       (catch Exception ex
         (writelog/tx-log! (str "FAILDED : fetch tx history " (.getMessage ex)))))
     (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
