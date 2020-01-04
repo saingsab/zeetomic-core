@@ -44,7 +44,7 @@
 (defn get-portforlio
   [wallet]
   (try
-    (json/read-str (get (client/get (str (get env :horizon) "/accounts/" wallet "/operations?order=desc")) :body) :key-fn keyword)
+    (get (json/read-str (get (client/get (str (get env :horizon) "/accounts/" wallet)) :body) :key-fn keyword) :balances)
     (catch Exception ex
       {:error {:message "Look like you don't have a wallet yet!"}})))
 
