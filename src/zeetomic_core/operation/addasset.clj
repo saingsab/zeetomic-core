@@ -13,8 +13,14 @@
 
 (defn add-assets!
   [akey assetCode assetIssuer]
+  (println "Change Trust...")
+  (try
+    (catch Exception ex
+      (writelog/op-log! (str "ERROR : Change Trust " (.getMessage ex)))))
   (client/post (str (get env :addassetendpoint))
-               {:form-params {:akey akey :assetCode assetCode :assetIssuer assetIssuer}
+               {:form-params {:akey akey
+                              :assetCode assetCode
+                              :assetIssuer assetIssuer}
                 :content-type :json}))
 
 (defn accept-asset?

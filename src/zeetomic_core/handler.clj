@@ -168,9 +168,9 @@
      (POST "/account-confirmation" []
        :body [user-confirm User-coinfirm]
        :summary "Confirm user account from phone"
-       (if (= (activation/activate-user
-               (get (activation/user-by-phone (get user-confirm :phone)) :id)
-               (get user-confirm :verification-code)) true)
+       (if (= (activation/activate-user-by-phone
+               (get user-confirm :phone)
+               (get user-confirm :verification_code)) true)
          (ok {:message "User successfully activated"})
          (ok {:error {:message "User failed activation"}})))
 

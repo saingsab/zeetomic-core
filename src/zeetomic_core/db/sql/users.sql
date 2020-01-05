@@ -82,11 +82,22 @@ SELECT ID, TEMP_TOKEN
 FROM USERS 
 WHERE ID = :ID
 
+-- :name get-users-token-phone :? :1
+SELECT PHONENUMBER, TEMP_TOKEN
+FROM USERS 
+WHERE PHONENUMBER = :PHONENUMBER
+
 -- :name user-activation :! :n
 UPDATE USERS
 SET TEMP_TOKEN = :TEMP_TOKEN,
     STATUS_ID = :STATUS_ID
 WHERE ID = :ID
+
+-- :name user-activation-by-phone :! :n
+UPDATE USERS
+SET TEMP_TOKEN = :TEMP_TOKEN,
+    STATUS_ID = :STATUS_ID
+WHERE PHONENUMBER = :PHONENUMBER
 
 -- :name update-status :! :n
 UPDATE USERS
