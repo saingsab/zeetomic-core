@@ -1,6 +1,7 @@
 (ns zeetomic-core.loyalty.merchant
   (:require [zeetomic-core.db.merchant :as merchant]
             [zeetomic-core.middleware.auth :as auth]
+            [zeetomic-core.db.users :as users]
             [zeetomic-core.util.conn :as conn]
             [zeetomic-core.util.writelog :as writelog]
             [ring.util.http-response :refer :all]))
@@ -9,7 +10,9 @@
   [token merchant-name short-name]
   (if (= (auth/authorized? token) true)
     (try
-      (merchant/add-merchants conn/db {:ID (java.util.UUID/randomUUID) :MERCHANT_NAME merchant-name :SHORTNAME short-name :CREATED_BY (get (auth/token? token) :_id)})
+      (let [created-by (get (auth/token? token) :_id)]
+        (merchant/add-merchants conn/db {:ID (java.util.UUID/randomUUID) :MERCHANT_NAME merchant-name :SHORTNAME short-name :CREATED_BY created-by})
+        (users/join-partners conn/db {:ID created-by}))
       (ok {:message "Successfully added merchant"})
       (catch Exception ex
         (writelog/op-log! (.getMessage ex))
@@ -26,7 +29,6 @@
         (writelog/op-log! (.getMessage ex))
         (ok {:error {:message "Something went wrong on our end"}})))
     (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
-
 
 (defn get-merchant-by-name
   [token merchant-name]

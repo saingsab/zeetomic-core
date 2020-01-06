@@ -121,5 +121,10 @@ SET WALLET  = :WALLET,
     PIN     = :PIN
 WHERE ID    = :ID
 
+-- :name join-partners :! :n
+UPDATE USERS
+SET IS_PARTNER  = TRUE
+WHERE ID    = :ID
+
 -- :name delete-user-by-phone :! :n
 DELETE FROM USERS WHERE PHONENUMBER = :PHONENUMBER
