@@ -126,5 +126,21 @@ UPDATE USERS
 SET IS_PARTNER  = TRUE
 WHERE ID    = :ID
 
+-- :name reset-password :! :n
+UPDATE USERS
+SET PASSWORD = :PASSWORD, 
+    TEMP_TOKEN = 0
+WHERE PHONENUMBER   = :PHONENUMBER
+
+-- :name set-pin :! :n
+UPDATE USERS
+SET PIN = :PIN 
+WHERE ID   = :ID
+
+-- :name update-temp :! :n
+UPDATE USERS
+SET TEMP_TOKEN = :TEMP_TOKEN 
+WHERE PHONENUMBER   = :PHONENUMBER
+
 -- :name delete-user-by-phone :! :n
 DELETE FROM USERS WHERE PHONENUMBER = :PHONENUMBER

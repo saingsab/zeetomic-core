@@ -87,6 +87,14 @@
    :location s/Str
    :approval_code s/Str})
 
+(s/defschema Phone
+    {:phone s/Str})
+
+(s/defschema Reset-password
+    {:temp-code s/Str
+    :phone s/Str
+    :password s/Str})
+
 (def app
   (api
    {:swagger
@@ -277,6 +285,20 @@
        :header-params [authorization :- s/Str]
        :summary "List all receipt activity"
        (receipts/get-receipt authorization))
+
+      (POST "/forget-password" []
+        :summary "Input User phone number to received reseting code"
+        :body [phone Phone]
+      (login/forget-password (get phone :phone)))
+
+    (POST "/reset-password" []
+      :summary "Enter a valid reseting code and new password"
+      :body [reset-password Reset-password]
+    (login/reset-password! (get reset-password :temp-code)
+  (get reset-password :phone)
+  (get reset-password :password)
+      
+      ))
 
 ; next
      )))
