@@ -98,7 +98,7 @@
   (if (= temp-code (get (users/get-users-by-phone conn/db {:PHONENUMBER phone}) :temp_token))
     (try
     ; match user and start reset new password
-      (users/reset-password conn/db {:PHONENUMBER phone :PASSWORD password})
+      (users/reset-password conn/db {:PHONENUMBER phone :PASSWORD (hashers/derive password)})
       (ok {:message "Your password successfully updated!"})
       (catch Exception ex
         (writelog/op-log! (str "ERROR : " (.getMessage ex)))))

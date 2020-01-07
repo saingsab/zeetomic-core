@@ -124,22 +124,22 @@
      (POST "/registerbyemail" []
        :body [user User-mail]
        :summary "Enter correct email and received confirmation"
-       (ok (register/accountbyemail (get user :email) (get user :password))))
+       (register/accountbyemail (get user :email) (get user :password)))
 
      (POST "/registerbyphone" []
        :body [user User-phone]
        :summary "Enter correct phone number and received confirmation code"
-       (ok (register/accountbyphone (get user :phone) (get user :password))))
+       (register/accountbyphone (get user :phone) (get user :password)))
 
      (POST "/loginbyemail" []
        :body [user User-mail]
        :summary "Login with email address get back token"
-       (ok (login/loginbyemail (get user :email) (get user :password))))
+       (login/loginbyemail (get user :email) (get user :password)))
 
      (POST "/loginbyphone" []
        :body [user User-phone]
        :summary "Login with phone number get back token"
-       (ok (login/loginbyphone (get user :phone) (get user :password))))
+       (login/loginbyphone (get user :phone) (get user :password)))
 
      (POST "/userprofile" []
        :header-params [authorization :- s/Str]
