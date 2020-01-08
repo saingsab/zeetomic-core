@@ -8,6 +8,7 @@
             [zeetomic-core.util.genpin :as genpin]
             [zeetomic-core.util.mailling :as mailling]
             [clj-http.client :as client]
+            [ring.util.http-response :refer :all]
             [aero.core :refer (read-config)]))
 
 (def env (read-config ".config.edn"))
@@ -42,12 +43,12 @@
                              (str "Welcome to Zeetomic! <br/> <br/> To complete verification please click the link below <br/> <br/><a href='https://api.zeetomic.com/pub/v1/account-confirmation?userid=" @user-id "&verification-code=" @temp-token "' style='padding:10px 28px;background:#0072BC;color:#fff;text-decoration:none' target='_blank' data-saferedirecturl='https://api.zeetomic.com/pub/v1/account-confirmation?userid=" @user-id "&verification-code=" @temp-token "' >Verify Email</a> <br/> <br/> Best regards, <br/> Zeetomic Team"))
         (reset! user-id (uuid))
         (reset! temp-token (uuid))
-        {:message "Successfully registered!"}
+        (ok {:message "Successfully registered!"})
         (catch Exception ex
           (log/error ex)))
-      {:message "Your email account already exists!"})
+      (ok {:message "Your email account already exists!"}))
     ; Fale
-    {:message "Your email doesn't seem right!"}))
+    (ok {:message "Your email doesn't seem right!"})))
 
 (defn accountbyphone
   [phone password]
@@ -59,12 +60,12 @@
         (users/register-users-by-phone conn/db {:ID (java.util.UUID/randomUUID) :PHONENUMBER phone :PASSWORD (hashers/derive password) :TEMP_TOKEN @pin-code :STATUS_ID status-id})
         (client/post (str (get env :smsendpoint)) {:form-params {:smscontent (str "Your ZEETOMIC verification code is:" @pin-code) :phonenumber phone} :content-type :json})
         (reset! pin-code (genpin/getpin))
-        {:message "Successfully registered!"}
+        (ok {:message "Successfully registered!"})
         (catch Exception ex
           (log/error ex)))
-      {:message "Your phone number already exists!"})
+      (ok {:message "Your phone number already exists!"}))
   ; Fale
-    {:message "Your phone number doesn't seem right!"}))
+    (ok {:message "Your phone number doesn't seem right!"})))
 
 
 
