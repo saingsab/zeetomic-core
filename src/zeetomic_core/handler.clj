@@ -91,9 +91,13 @@
     {:phone s/Str})
 
 (s/defschema Reset-password
-    {:temp-code s/Str
-    :phone s/Str
-    :password s/Str})
+    {:temp_code s/Str
+     :phone s/Str
+     :password s/Str})
+
+(s/defschema Chang-pin
+  {:current_pin s/Str
+   :new_pin s/Str})
 
 (def app
   (api
@@ -289,16 +293,22 @@
       (POST "/forget-password" []
         :summary "Input User phone number to received reseting code"
         :body [phone Phone]
-      (login/forget-password (get phone :phone)))
+        (login/forget-password (get phone :phone)))
 
     (POST "/reset-password" []
       :summary "Enter a valid reseting code and new password"
       :body [reset-password Reset-password]
-    (login/reset-password! (get reset-password :temp-code)
-  (get reset-password :phone)
-  (get reset-password :password)
-      
-      ))
+      (login/reset-password! (get reset-password :temp-code)
+                            (get reset-password :phone)
+                            (get reset-password :password)))
+
+    (POST "/change-pin" []
+      :header-params [authorization :- s/Str]
+      :summary "Enter current PIN and new PIN to change!"
+      :body [chang-pin Chang-pin]
+      (login/change-pin! authorization
+                        (get chang-pin :current_pin)
+                        (get chang-pin :new_pin)))
 
 ; next
      )))
