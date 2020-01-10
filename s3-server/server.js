@@ -10,9 +10,7 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 const App = new Koa();
-App.use(
-  cors({ origin: "https://app.zeetomic.com" || "http://localhost:3000" })
-);
+App.use(cors({ origin: "*" }));
 
 App.use(bodyParser());
 
