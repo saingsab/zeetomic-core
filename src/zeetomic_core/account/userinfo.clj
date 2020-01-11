@@ -28,7 +28,6 @@
                                          :MID_NAME mid-name 
                                          :LAST_NAME last-name 
                                          :GENDER gender 
-                                         :PHONENUMBER phone
                                          :STATUS_ID Status})
       (ok {:message "Your profile have been saved successfully"})
       (catch Exception ex

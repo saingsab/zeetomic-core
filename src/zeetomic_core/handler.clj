@@ -44,8 +44,7 @@
   {:first_name s/Str
    :mid_name s/Str
    :last_name s/Str
-   :gender s/Str
-   :phone s/Str})
+   :gender s/Str})
 
 (s/defschema User-coinfirm
   {:phone s/Str
@@ -159,8 +158,7 @@
                                 (get profile :first_name)
                                 (get profile :mid_name)
                                 (get profile :last_name)
-                                (get profile :gender)
-                                (get profile :phone)))
+                                (get profile :gender)))
 
      (GET "/userprofile" []
        :header-params [authorization :- s/Str]
