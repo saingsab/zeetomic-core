@@ -111,9 +111,9 @@
         (try 
           (users/change-password conn/db {:ID (get (auth/token? token) :_id) :PASSWORD (hashers/derive new-password)})
           (ok {:message "Your password successfully changed!"})
-        (catch Exception ex 
-          (writelog/op-log! (str "ERROR : " (.getMessage ex)))
-          (ok {:error {:message "Opps! your current Password was not correct!"}}))))
+          (catch Exception ex 
+            (writelog/op-log! (str "ERROR : " (.getMessage ex)))))
+        (ok {:error {:message "Opps! your current Password was not correct!"}}))
       (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
 
 (defn change-pin!
