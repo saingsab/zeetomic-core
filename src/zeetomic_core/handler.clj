@@ -44,7 +44,8 @@
   {:first_name s/Str
    :mid_name s/Str
    :last_name s/Str
-   :gender s/Str})
+   :gender s/Str
+   :phone s/Str})
 
 (s/defschema User-coinfirm
   {:phone s/Str
@@ -85,6 +86,7 @@
   {:receipt_no s/Str
    :amount s/Str
    :location s/Str
+   :image_uri s/Str
    :approval_code s/Str})
 
 (s/defschema Phone
@@ -95,9 +97,13 @@
      :phone s/Str
      :password s/Str})
 
-(s/defschema Chang-pin
+(s/defschema Change-pin
   {:current_pin s/Str
    :new_pin s/Str})
+
+(s/defschema Change-password
+  {:current_password s/Str
+   :new_password s/Str})
 
 (def app
   (api
@@ -153,7 +159,8 @@
                                 (get profile :first_name)
                                 (get profile :mid_name)
                                 (get profile :last_name)
-                                (get profile :gender)))
+                                (get profile :gender)
+                                (get profile :phone)))
 
      (GET "/userprofile" []
        :header-params [authorization :- s/Str]
@@ -283,6 +290,7 @@
                               (get receipt :receipt_no)
                               (get receipt :amount)
                               (get receipt :location)
+                              (get receipt :image_uri)
                               (get receipt :approval_code)))
 
      (GET "/get-receipt" []
@@ -305,11 +313,18 @@
     (POST "/change-pin" []
       :header-params [authorization :- s/Str]
       :summary "Enter current PIN and new PIN to change!"
-      :body [chang-pin Chang-pin]
+      :body [change-pin Change-pin]
       (login/change-pin! authorization
-                        (get chang-pin :current_pin)
-                        (get chang-pin :new_pin)))
+                        (get change-pin :current_pin)
+                        (get change-pin :new_pin)))
 
+    (POST "/change-password" []
+      :header-params [authorization :- s/Str]
+      :summary "Enter current Password and new Password to change!"
+      :body [change-password Change-password]
+      (login/change-password! authorization 
+                              (get change-password :current_password)
+                              (get change-password :new_password)))
 ; next
      )))
 

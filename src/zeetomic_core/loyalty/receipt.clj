@@ -27,7 +27,7 @@
     false))
 
 (defn add-receipt!
-  [token receipt-no amount location approval-code]
+  [token receipt-no amount location image-uri approval-code]
   (if (= (auth/authorized? token) true)
     (let [created-by (get (auth/token? token) :_id)]
       (try
@@ -44,6 +44,7 @@
                                                     :LOCATION location
                                                     :REWARDS (reward location (Float. amount))
                                                     :STATUS "Pendding"
+                                                    :IMAGE_URI image-uri
                                                     :CREATED_BY created-by})
                       (ok {:message "Your transaction has been submitted!"})
                       (catch Exception ex

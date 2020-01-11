@@ -77,7 +77,7 @@
                       (catch Exception ex
                         (.getMessage ex)))
                     (writelog/tx-log! (str "FAILDED : FN Pay from : " (get (auth/token? token) :_id) " Out of ZTO "))))
-          (ok {:message "Your transaction has been submitted!"})
+          (ok {:message "Your transaction is on the way!"})
           (catch Exception ex
             (writelog/tx-log! (str "FAILDED : FN Pay from : " (get (auth/token? token) :_id) " Out of ZTO "))))
         (ok {:error {:message "PIN does not correct!"}}))
