@@ -19,7 +19,7 @@
   (nil? (users/get-users-by-mail conn/db {:EMAIL email})))
 
 (defn setup-profile!
-  [token first-name mid-name last-name gender phone]
+  [token first-name mid-name last-name gender]
   (if (= (auth/authorized? token) true)
   ; letdo
     (try
