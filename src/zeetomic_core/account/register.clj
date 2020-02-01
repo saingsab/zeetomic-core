@@ -58,7 +58,8 @@
       (try
         ; SAVE to Database and send welcome message
         (users/register-users-by-phone conn/db {:ID (java.util.UUID/randomUUID) :PHONENUMBER phone :PASSWORD (hashers/derive password) :TEMP_TOKEN @pin-code :STATUS_ID status-id})
-        (client/post (str (get env :smsendpoint)) {:form-params {:smscontent (str "Your ZEETOMIC verification code is:" @pin-code) :phonenumber phone} :content-type :json})
+        ; (client/post (str (get env :smsendpoint)) {:form-params {:smscontent (str "Your ZEETOMIC verification code is:" @pin-code) :phonenumber phone} :content-type :json})
+        (client/post (str (get env :smsendpoint)) {:form-params {:smscontent (str "Welcome to ZEETOMIC The Platform for the Issuance and Management of Digital Asset") :phonenumber phone} :content-type :json})
         (reset! pin-code (genpin/getpin))
         (ok {:message "Successfully registered!"})
         (catch Exception ex

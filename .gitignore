@@ -12,3 +12,4 @@ s3-server/.env
 stellar-poc/node_modules
 s3-server/node_modules
 stellar-poc/rest.http
+waves-srv/node_modules
