@@ -35,7 +35,7 @@
     ; True
       (try
         (reset! xwallet (wallets))
-        (future (Thread/sleep 8000)
+        (future (Thread/sleep 5000)
                 (try
                   (users/setup-user-wallet conn/db {:ID (get (auth/token? token) :_id) :WALLET (get @xwallet :wallet) :SEED (ed/encrypt (get @xwallet :seed)) :PIN (hashers/derive pin)})
                   (addasset/add-assets! (get @xwallet :seed) "ZTO" (get env :assetIssuer))
