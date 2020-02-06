@@ -9,8 +9,10 @@ exports.transfer = async ctx => {
         {
           amount: (ctx.request.body.amount * 100000000),
           recipient: ctx.request.body.recipient, //"3MwAZCvPLofPwx2X6nfkGBq4nQ6x6AhuyVr",
-          assetId: ctx.request.body.assetId, // 'EXGCeHPMVKVrSHqbjPWZSA6QzThyF9Rz5hMAKqf3R1mc',
-          feeAssetId: ctx.request.body.feeAssetId//  'EXGCeHPMVKVrSHqbjPWZSA6QzThyF9Rz5hMAKqf3R1mc'
+          assetId: 'EXGCeHPMVKVrSHqbjPWZSA6QzThyF9Rz5hMAKqf3R1mc',
+          // assetId: ctx.request.body.assetId, // 'EXGCeHPMVKVrSHqbjPWZSA6QzThyF9Rz5hMAKqf3R1mc',
+          // feeAssetId: ctx.request.body.feeAssetId//  'EXGCeHPMVKVrSHqbjPWZSA6QzThyF9Rz5hMAKqf3R1mc'
+          feeAssetId:'EXGCeHPMVKVrSHqbjPWZSA6QzThyF9Rz5hMAKqf3R1mc'
           
         },
         seed
@@ -21,7 +23,7 @@ exports.transfer = async ctx => {
         .then(resp => console.log(resp))
         .catch(err => console.error(err));
       ctx.status = 200;
-      ctx.body = { message: `ERROR ${e.message}` };
+      ctx.body = { message: "Your transaction is on the way!"};
       return;
     }catch (e){
       ctx.status = 200;

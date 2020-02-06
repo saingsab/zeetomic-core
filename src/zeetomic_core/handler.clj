@@ -12,6 +12,10 @@
             [zeetomic-core.account.activation :as activation]
             [zeetomic-core.middleware.auth :as auth]
             [zeetomic-core.operation.getwallet :as getwallet]
+            [zeetomic-core.waves.wallet :as waves-wallet]
+            [zeetomic-core.waves.portforlio :as waves-portforlio]
+            [zeetomic-core.waves.txhistory :as waves-txhistory]
+            [zeetomic-core.waves.transfer :as waves-transfer]
             [zeetomic-core.operation.addasset :as addasset]
             [zeetomic-core.operation.pay :as pay]
             [zeetomic-core.loyalty.merchant :as merchants]
@@ -104,6 +108,14 @@
   {:current_password s/Str
    :new_password s/Str})
 
+; Waves Schema
+(s/defschema Waves-payment
+  {:pin s/Str
+  ;  :asset_code s/Str
+   :destination s/Str
+   :amount s/Str})
+  ;  :memo s/Str})
+
 (def app
   (api
    {:swagger
@@ -120,13 +132,35 @@
             :securityDefinitions {:Authorization_JWT {:type "apiKey"
                                                       :name "Authorization"
                                                       :in "header"}}}}}
-   (context "/sec/v1" []
+   (context "/ke/v1" []
     ;  :no-doc true
-     :tags ["SEC API"]
-     (GET "/internal" []
-       :summary "adds two numbers together"
+     :tags ["KE TOKEN API"]
+     (POST "/wallet" []
+       :body [req-wallet Req-wallet]
        :header-params [authorization :- s/Str]
-       (ok {:message "Security Partial"})))
+       :summary "Provide PIN and get wallet"
+        (waves-wallet/gen-wallet authorization 
+                                 (get req-wallet :pin)))
+      (GET "/portforlio" []
+       :header-params [authorization :- s/Str]
+       :summary "display portfolio on user base"
+       (waves-portforlio/get-portforlio authorization))
+
+      (POST "/sendpayment" []
+       :header-params [authorization :- s/Str]
+       :body [send-payment Waves-payment]
+       :summary "Sending payment to other wallet"
+       (waves-transfer/send-payment authorization
+                  (get send-payment :amount)
+                 (get send-payment :destination)))
+        
+      (GET "/trx-history" []
+       :header-params [authorization :- s/Str]
+       :summary "display detail transaction history"
+       (waves-txhistory/get-txhistory authorization))
+    ; end of KE endpoint                             
+    )
+
    (context "/pub/v1" []
      :tags ["api"]
 
