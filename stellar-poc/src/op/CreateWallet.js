@@ -14,7 +14,7 @@ async function CreateWallet(DisKey, wallets) {
   ]);
 
   const transaction = new StellarSdk.TransactionBuilder(sender, {
-    fee,
+    fee: 100,
     networkPassphrase: NETWORK_PASSPHRASE
   })
     .addOperation(

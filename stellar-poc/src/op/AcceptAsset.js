@@ -14,7 +14,7 @@ async function AcceptAsset(accountKey, _AssetCode, _assetIssuer) {
   ]);
 
   const changeTrustTx = new StellarSdk.TransactionBuilder(account, {
-    fee,
+    fee: 100,
     networkPassphrase: NETWORK_PASSPHRASE
   })
     .addOperation(
