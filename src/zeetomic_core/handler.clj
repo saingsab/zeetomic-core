@@ -144,7 +144,7 @@
      (POST "/whitelist" []
        :header-params [authorization :- s/Str]
        :body [kpi-whitelist Kpi-whitelist]
-       :summary "whitlest wallet to that can hold KPI token"
+       :summary "Whitelist wallet for KPI token holder"
 
        (whitelist/whitelist!
         authorization
