@@ -1,3 +1,5 @@
+/** @format */
+
 const Koa = require("koa");
 const _ = require("koa-route");
 const cors = require("@koa/cors");
@@ -9,6 +11,7 @@ const acceptasset = require("./route/acceptasset");
 const sendpayment = require("./route/sendpayment");
 const feecharge = require("./route/feecharge");
 const sendsms = require("./route/sendsms");
+const whitelist = require("./secure/whitelist");
 
 dotenv.config();
 const App = new Koa();
@@ -20,6 +23,7 @@ App.use(_.post("/acceptasset", acceptasset.acceptasset));
 App.use(_.post("/sendpayment", sendpayment.sendpayment));
 App.use(_.post("/feecharge", feecharge.feecharge));
 App.use(_.post("/sendsms", sendsms.sendsms));
+App.use(_.post("/whitelist", whitelist.whitelist));
 
 try {
   App.listen(process.env.PORT);

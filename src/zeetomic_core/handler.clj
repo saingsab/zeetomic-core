@@ -20,7 +20,8 @@
             [zeetomic-core.operation.pay :as pay]
             [zeetomic-core.loyalty.merchant :as merchants]
             [zeetomic-core.loyalty.branches :as branches]
-            [zeetomic_core.loyalty.receipt :as receipts]))
+            [zeetomic_core.loyalty.receipt :as receipts]
+            [zeetomic-core.sto.whitelist :as whitelist]))
 
 (s/defschema User-mail
   {:email s/Str
@@ -93,12 +94,12 @@
    :approval_code s/Str})
 
 (s/defschema Phone
-    {:phone s/Str})
+  {:phone s/Str})
 
 (s/defschema Reset-password
-    {:temp_code s/Str
-     :phone s/Str
-     :password s/Str})
+  {:temp_code s/Str
+   :phone s/Str
+   :password s/Str})
 
 (s/defschema Change-pin
   {:current_pin s/Str
@@ -116,6 +117,11 @@
    :amount s/Str})
   ;  :memo s/Str})
 
+(s/defschema Kpi-whitelist
+  {:trustoracc s/Str
+   :assetcode s/Str
+   :authcode s/Str})
+
 (def app
   (api
    {:swagger
@@ -132,6 +138,20 @@
             :securityDefinitions {:Authorization_JWT {:type "apiKey"
                                                       :name "Authorization"
                                                       :in "header"}}}}}
+   (context "/kpi/v1" []
+    ;  :no-doc true
+     :tags ["KPI"]
+     (POST "/whitelist" []
+       :header-params [authorization :- s/Str]
+       :body [kpi-whitelist Kpi-whitelist]
+       :summary "whitlest wallet to that can hold KPI token"
+
+       (whitelist/whitelist!
+        authorization
+        (get kpi-whitelist :trustoracc)
+        (get kpi-whitelist :assetcode)
+        (get kpi-whitelist :authcode))))
+
    (context "/ke/v1" []
     ;  :no-doc true
      :tags ["KE TOKEN API"]
@@ -139,27 +159,27 @@
        :body [req-wallet Req-wallet]
        :header-params [authorization :- s/Str]
        :summary "Provide PIN and get wallet"
-        (waves-wallet/gen-wallet authorization 
-                                 (get req-wallet :pin)))
-      (GET "/portforlio" []
+       (waves-wallet/gen-wallet authorization
+                                (get req-wallet :pin)))
+     (GET "/portforlio" []
        :header-params [authorization :- s/Str]
        :summary "display portfolio on user base"
        (waves-portforlio/get-portforlio authorization))
 
-      (POST "/sendpayment" []
+     (POST "/sendpayment" []
        :header-params [authorization :- s/Str]
        :body [send-payment Waves-payment]
        :summary "Sending payment to other wallet"
        (waves-transfer/send-payment authorization
-                  (get send-payment :amount)
-                 (get send-payment :destination)))
-        
-      (GET "/trx-history" []
+                                    (get send-payment :amount)
+                                    (get send-payment :destination)))
+
+     (GET "/trx-history" []
        :header-params [authorization :- s/Str]
        :summary "display detail transaction history"
        (waves-txhistory/get-txhistory authorization))
     ; end of KE endpoint                             
-    )
+     )
 
    (context "/pub/v1" []
      :tags ["api"]
@@ -330,33 +350,33 @@
        :summary "List all receipt activity"
        (receipts/get-receipt authorization))
 
-      (POST "/forget-password" []
-        :summary "Input User phone number to received reseting code"
-        :body [phone Phone]
-        (login/forget-password (get phone :phone)))
+     (POST "/forget-password" []
+       :summary "Input User phone number to received reseting code"
+       :body [phone Phone]
+       (login/forget-password (get phone :phone)))
 
-    (POST "/reset-password" []
-      :summary "Enter a valid reseting code and new password"
-      :body [reset-password Reset-password]
-      (login/reset-password! (get reset-password :temp-code)
-                            (get reset-password :phone)
-                            (get reset-password :password)))
+     (POST "/reset-password" []
+       :summary "Enter a valid reseting code and new password"
+       :body [reset-password Reset-password]
+       (login/reset-password! (get reset-password :temp-code)
+                              (get reset-password :phone)
+                              (get reset-password :password)))
 
-    (POST "/change-pin" []
-      :header-params [authorization :- s/Str]
-      :summary "Enter current PIN and new PIN to change!"
-      :body [change-pin Change-pin]
-      (login/change-pin! authorization
-                        (get change-pin :current_pin)
-                        (get change-pin :new_pin)))
+     (POST "/change-pin" []
+       :header-params [authorization :- s/Str]
+       :summary "Enter current PIN and new PIN to change!"
+       :body [change-pin Change-pin]
+       (login/change-pin! authorization
+                          (get change-pin :current_pin)
+                          (get change-pin :new_pin)))
 
-    (POST "/change-password" []
-      :header-params [authorization :- s/Str]
-      :summary "Enter current Password and new Password to change!"
-      :body [change-password Change-password]
-      (login/change-password! authorization 
-                              (get change-password :current_password)
-                              (get change-password :new_password)))
+     (POST "/change-password" []
+       :header-params [authorization :- s/Str]
+       :summary "Enter current Password and new Password to change!"
+       :body [change-password Change-password]
+       (login/change-password! authorization
+                               (get change-password :current_password)
+                               (get change-password :new_password)))
 ; next
      )))
 

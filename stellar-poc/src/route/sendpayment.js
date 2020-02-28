@@ -1,3 +1,5 @@
+/** @format */
+
 const SendPayment = require("../op/Payment");
 
 exports.sendpayment = async ctx => {

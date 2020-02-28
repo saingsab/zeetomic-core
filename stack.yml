@@ -1,3 +1,5 @@
+# @format
+
 version: "3.1"
 networks:
   web:
@@ -53,7 +55,7 @@ services:
     working_dir: /home/node/app
     command: >
       sh -c "npm install -g pm2 && npm install && pm2-runtime src/waves.js --watch"
-  
+
   s3-server:
     image: node:12-alpine
     container_name: "zeetomic-s3-testnet"
