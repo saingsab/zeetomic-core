@@ -9,7 +9,8 @@ CREATE TABLE IF NOT EXISTS RECEIPTS (
     REMARK TEXT,
     STATUS VARCHAR (36),
     CREATED_AT timestamp NOT NULL default current_timestamp,
-    CREATED_BY VARCHAR (36)
+    CREATED_BY VARCHAR (36),
+    UPDATED_BY VARCHAR (36) 
 )
 
 -- :name drop-receipt-table :!
@@ -22,8 +23,7 @@ INSERT INTO RECEIPTS (
     AMOUNT, 
     LOCATION, 
     REWARDS, 
-    STATUS,
-    IMAGE_URI, 
+    STATUS, 
     CREATED_BY
 )
 VALUES (
@@ -33,13 +33,13 @@ VALUES (
     :LOCATION,
     :REWARDS,
     :STATUS,
-    :IMAGE_URI,
     :CREATED_BY
 )
 
 -- :name update-receipt-status :! :n
 UPDATE RECEIPTS
-SET STATUS  = :STATUS
+SET STATUS  = 'Completed',
+    UPDATED_BY = :UPDATED_BY
 WHERE ID = :ID
 
 --:name get-all-receipt :? :*

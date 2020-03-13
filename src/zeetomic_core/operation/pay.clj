@@ -89,15 +89,17 @@
 (defn reward!
   [branches-name destination amount txid]
   (let [sender (branches/get-branches-by-name conn/db {:BRANCHES_NAME branches-name})]
+    (println "Check balance.....")
     (if (= true (enought-balance? (get (users/get-users-by-id conn/db {:ID (get sender :created_by)}) :wallet) "ZTO" 0.0002))
       (try
+        (println "Start FEE.....")
         (fee (ed/decrypt (get (users/get-seed-by-id conn/db {:ID (get sender :created_by)}) :seed)))
-        (receipt/update-receipt-status conn/db {:ID (str txid) :STATUS "Completed"})
+        (println "Start Rewarding.....")
         (client/post (str (get env :sendpayment))
                      {:form-params {:senderKey (ed/decrypt (get (users/get-seed-by-id conn/db {:ID (get sender :created_by)}) :seed))
                                     :assetCode (get sender :asset_code)
                                     :destination destination
-                                    :amount amount
+                                    :amount (str amount)
                                     :memo "Reward!"}
                       :content-type :json})
 

@@ -7,7 +7,7 @@
             [ring.util.http-response :refer :all]))
 
 (defn add-branches!
-  [token merchant-id branches-name address reward-rates asset-code minimum-spend approval-code]
+  [token merchant-id branches-name address reward-rates asset-code minimum-spend approval-code logo-uri]
   (if (= (auth/authorized? token) true)
     (let [created-by (get (auth/token? token) :_id)]
       (if (= created-by (get (merchant/get-merchants-by-owner conn/db {:CREATED_BY created-by}) :created_by))
@@ -20,6 +20,7 @@
                                           :ASSET_CODE asset-code
                                           :MINIMUM_SPEND  (Float. minimum-spend)
                                           :APPROVAL_CODE approval-code
+                                          :LOGO_URI logo-uri
                                           :CREATED_BY created-by})
           (ok {:message "Successfully added branches"})
           (catch Exception ex
@@ -29,7 +30,7 @@
     (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
 
 (defn update-branches?
-  [token branches-name address reward-rates asset-code minimum-spend approval-code is-active]
+  [token branches-name address reward-rates asset-code minimum-spend approval-code is-active logo-uri]
 
   (if (= (auth/authorized? token) true)
     (let [created-by (get (auth/token? token) :_id)]
@@ -42,6 +43,7 @@
                                                :ASSET_CODE  asset-code
                                                :MINIMUM_SPEND (Float. minimum-spend)
                                                :APPROVAL_CODE approval-code
+                                               :LOGO_URI logo-uri
                                                :IS_ACTIVE is-active})
             (ok {:message "Successfully updated branches"})
             (catch Exception ex

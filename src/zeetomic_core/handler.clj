@@ -21,7 +21,8 @@
             [zeetomic-core.loyalty.merchant :as merchants]
             [zeetomic-core.loyalty.branches :as branches]
             [zeetomic_core.loyalty.receipt :as receipts]
-            [zeetomic-core.sto.whitelist :as whitelist]))
+            [zeetomic-core.sto.whitelist :as whitelist]
+            [zeetomic-core.loyalty.genreward :as genreward]))
 
 (s/defschema User-mail
   {:email s/Str
@@ -74,7 +75,8 @@
    :reward_rates s/Str
    :asset_code s/Str
    :minimum_spend s/Str
-   :approval_code s/Str})
+   :approval_code s/Str
+   :logo_uri s/Str})
 
 (s/defschema Update-Branches
   {:branches_name s/Str
@@ -83,6 +85,7 @@
    :asset_code s/Str
    :minimum_spend s/Str
    :approval_code s/Str
+   :logo_uri s/Str
    :is-active s/Bool})
 
 
@@ -92,6 +95,15 @@
    :location s/Str
    :image_uri s/Str
    :approval_code s/Str})
+
+(s/defschema Genqr
+  {:location s/Str
+   :approval_code s/Str
+   :receipt_no s/Str
+   :amount s/Str})
+
+(s/defschema Getreward
+  {:hashs s/Str})
 
 (s/defschema Phone
   {:phone s/Str})
@@ -315,7 +327,8 @@
                                (get branches :reward_rates)
                                (get branches :asset_code)
                                (get branches :minimum_spend)
-                               (get branches :approval_code)))
+                               (get branches :approval_code)
+                               (get branches :logo_uri)))
 
      (POST "/update-branches" []
        :header-params [authorization :- s/Str]
@@ -328,6 +341,7 @@
                                   (get update-branches :asset_code)
                                   (get update-branches :minimum_spend)
                                   (get update-branches :approval_code)
+                                  (get update-branches :logo_uri)
                                   (get update-branches :is-active)))
      (GET "/get-all-branches" []
        :header-params [authorization :- s/Str]
@@ -344,6 +358,23 @@
                               (get receipt :location)
                               (get receipt :image_uri)
                               (get receipt :approval_code)))
+
+     (POST "/set-qr" []
+       :header-params [authorization :- s/Str]
+       :body [genqr Genqr]
+       :summary "Send data to request QR code"
+       (genreward/gen-str authorization
+                          (get genqr :location)
+                          (get genqr :approval_code)
+                          (get genqr :receipt_no)
+                          (get genqr :amount)))
+
+     (POST "/get-rewards" []
+       :header-params [authorization :- s/Str]
+       :body [getreward Getreward]
+       :summary "Send qr to get rewards!"
+       (genreward/valid-str? authorization
+                             (get getreward :hashs)))
 
      (GET "/get-receipt" []
        :header-params [authorization :- s/Str]
