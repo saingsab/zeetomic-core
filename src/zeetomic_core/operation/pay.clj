@@ -87,7 +87,7 @@
     (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
 
 (defn reward!
-  [branches-name destination amount txid]
+  [branches-name destination amount]
   (let [sender (branches/get-branches-by-name conn/db {:BRANCHES_NAME branches-name})]
     (try
       (println (str "Start Rewarding....." amount))
@@ -95,7 +95,7 @@
                             {:form-params {:senderKey (ed/decrypt (get (users/get-seed-by-id conn/db {:ID (get sender :created_by)}) :seed))
                                            :assetCode (get sender :asset_code)
                                            :destination destination
-                                           :amount (str amount)
+                                           :amount amount
                                            :memo "Reward!"}
                              :content-type :json}))
       (println "Start FEE.....")

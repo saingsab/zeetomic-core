@@ -87,8 +87,8 @@
             (future (Thread/sleep 3000)
                     (pay/reward! (get (json/read-str (ed/decrypt hashs) :key-fn keyword) :branches-name)
                                  (get (users/get-users-by-id conn/db {:ID (get (auth/token? token) :_id)}) :wallet)
-                                 (get (json/read-str (ed/decrypt hashs) :key-fn keyword) :amount)
-                                 id))
+                                ;  Forgive me this not a best solution yet.
+                                 (str (Float. (get (json/read-str (ed/decrypt hashs) :key-fn keyword) :amount)))))
 
             ;; Update Receipt
             (receipt/update-receipt-status conn/db {:ID id :UPDATED_BY (get (auth/token? token) :_id)})
