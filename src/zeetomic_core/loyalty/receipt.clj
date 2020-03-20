@@ -65,7 +65,7 @@
   [token]
   (if (= (auth/authorized? token) true)
     (try
-      (ok (receipt/get-receipt-by-owner conn/db {:CREATED_BY (get (auth/token? token) :_id)}))
+      (ok (receipt/get-receipt-by-owner conn/db {:UPDATED_BY (get (auth/token? token) :_id)}))
       (catch Exception ex
         (writelog/op-log! (str "ERROR : " (.getMessage ex)))
         (ok {:error {:message "Something went wrong on our end"}})))
