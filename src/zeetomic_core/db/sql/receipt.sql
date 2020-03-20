@@ -45,7 +45,7 @@ WHERE ID = :ID
 --:name get-all-receipt :? :*
 SELECT * FROM RECEIPTS
 
--- :name get-receipt-by-owner :? :*
+-- :name get-receipt-by-owner :? :* 
 SELECT * FROM RECEIPTS
 WHERE UPDATED_BY = :UPDATED_BY
 ORDER BY UPDATED_BY DESC
