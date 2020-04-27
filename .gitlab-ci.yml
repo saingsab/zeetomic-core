@@ -11,7 +11,10 @@ deploy_production:
     - echo "$AWSKEY" > ~/.ssh/zeetomic-key.pem
     - chmod 400 ~/.ssh/zeetomic-key.pem
     #adding key.pem to host
-    - ssh -i "~/.ssh/zeetomic-key.pem" ec2-user@ec2-54-255-208-86.ap-southeast-1.compute.amazonaws.com "cd /home/ec2-user/zeetomic-core && docker-compose -f stack.yml down && git add . && git pull && docker-compose -f stack.yml up -d && ./notify.sh && exit"
+    #PRD
+    #- ssh -i "~/.ssh/zeetomic-key.pem" ec2-user@ec2-54-255-208-86.ap-southeast-1.compute.amazonaws.com "cd /home/ec2-user/zeetomic-core && docker-compose -f stack.yml down && git add . && git pull && docker-compose -f stack.yml up -d && ./notify.sh && exit"
+    #TEST
+    - ssh -i "~/.ssh/zeetomic-key.pem" ec2-user@ec2-52-221-187-194.ap-southeast-1.compute.amazonaws.com "cd /home/ec2-user/zeetomic-core && docker-compose -f stack.yml down && git add . && git pull && docker-compose -f stack.yml up -d && ./notify.sh && exit"
 
   only:
     - master
