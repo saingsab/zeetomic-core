@@ -1,3 +1,4 @@
+#PRO and TEST Server are running
 deploy_production:
   stage: deploy
   image: kroniak/ssh-client
