@@ -121,6 +121,14 @@
   {:current_password s/Str
    :new_password s/Str})
 
+(s/defschema Set-kyc
+  {:document_no s/Str
+   :documenttype_id s/Str
+   :document_uri s/Str
+   :face_uri s/Str
+   :issue_date s/Str
+   :expire_date s/Str})
+
 ; Waves Schema
 (s/defschema Waves-payment
   {:pin s/Str
@@ -408,6 +416,17 @@
        (login/change-password! authorization
                                (get change-password :current_password)
                                (get change-password :new_password)))
+     (POST "/set-kyc" []
+       :header-params [authorization :- s/Str]
+       :summary "Submit KYC document to be approve by institution"
+       :body [set-kyc Set-kyc]
+       (userinfo/set-kyc! authorization
+                          (get set-kyc :document_no)
+                          (get set-kyc :documenttype_id)
+                          (get set-kyc :document_uri)
+                          (get set-kyc :face_uri)
+                          (get set-kyc :issue_date)
+                          (get set-kyc :expire_date)))
 ; next
      )))
 
