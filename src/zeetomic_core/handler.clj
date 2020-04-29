@@ -427,6 +427,11 @@
                           (get set-kyc :face_uri)
                           (get set-kyc :issue_date)
                           (get set-kyc :expire_date)))
+
+     (GET "/get-documenttype" []
+       :header-params [authorization :- s/Str]
+       :summary "Get list of document type"
+       (userinfo/get-documenttype authorization))
 ; next
      )))
 

@@ -4,6 +4,7 @@
             [zeetomic-core.db.users :as users]
             [zeetomic-core.db.status :as stu]
             [zeetomic-core.db.documents :as documents]
+            [zeetomic-core.db.documenttype :as documenttype]
             [zeetomic-core.middleware.auth :as auth]
             [ring.util.http-response :refer :all]
             [zeetomic-core.util.writelog :as writelog]))
@@ -21,6 +22,16 @@
 (defn email-not-exist?
   [email]
   (nil? (users/get-users-by-mail conn/db {:EMAIL email})))
+
+(defn get-documenttype
+  [token]
+  (if (= (auth/authorized? token) true)
+    (try
+      (ok (documenttype/get-all-documenttype conn/db))
+      (catch Exception ex
+        (writelog/op-log! (str "ERROR : FN GET DOCUMENTTYPE " (.getMessage ex)))
+        {:error {:message "Something went wrong on our end"}}))
+    (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
 
 (defn setup-profile!
   [token first-name mid-name last-name gender]
