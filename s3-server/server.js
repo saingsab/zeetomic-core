@@ -1,3 +1,5 @@
+/** @format */
+
 const Koa = require("koa");
 const _ = require("koa-route");
 const cors = require("@koa/cors");
@@ -20,17 +22,18 @@ App.use(json());
 App.use(koaBody({ multipart: true }));
 
 App.use(
-  _.post("/upload", async ctx => {
+  // problic Profile
+  _.post("/upload", async (ctx) => {
     const file = ctx.request.files.file;
     const { key } = await uploadFile({
       bucket: "zeepub",
       acl: "public-read",
       fileName: uuid().toString(),
       filePath: file.path,
-      fileType: file.type
+      fileType: file.type,
     });
     ctx.body = {
-      uri: `https://zeepub.s3-ap-southeast-1.amazonaws.com/${key}`
+      uri: `https://zeepub.s3-ap-southeast-1.amazonaws.com/${key}`,
     };
   })
 );

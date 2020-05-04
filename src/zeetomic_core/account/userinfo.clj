@@ -66,8 +66,8 @@
     (try
       (println "seting KYC...")
       (documents/set-documents conn/db {:ID @docs-id :DOCUMENTS_NO document_no :DOCUMENTTYPE_ID documenttype_id :DOCUMENT_URI document_uri :FACE_URI face_uri :ISSUE_DATE issue_date :EXPIRE_DATE expire_date :CREATED_BY (get (auth/token? token) :_id)})
-      (ok {:message "Documents have been submitted "})
       (reset! docs-id (uuid))
+      (ok {:message "Documents have been submitted "})
       (catch Exception ex
         (writelog/op-log! (str "ERROR : FN SET-KYC" (.getMessage ex)))
         (ok {:error {:message "Something went wrong on our end"}})))
