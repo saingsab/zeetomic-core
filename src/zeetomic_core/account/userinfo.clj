@@ -15,6 +15,9 @@
 (def Status
   (get (stu/get-status-by-name conn/db {:STATUS_NAME "active"}) :id))
 
+(def Status-verifying
+  (get (stu/get-status-by-name conn/db {:STATUS_NAME "verifying"}) :id))
+
 (defn phone-not-exist?
   [phone]
   (nil? (users/get-users-by-phone conn/db {:PHONENUMBER phone})))
@@ -65,9 +68,19 @@
   (if (= (auth/authorized? token) true)
     (try
       (println "seting KYC...")
-      (documents/set-documents conn/db {:ID @docs-id :DOCUMENTS_NO document_no :DOCUMENTTYPE_ID documenttype_id :DOCUMENT_URI document_uri :FACE_URI face_uri :ISSUE_DATE issue_date :EXPIRE_DATE expire_date :CREATED_BY (get (auth/token? token) :_id)})
+      (documents/set-documents conn/db {:ID @docs-id
+                                        :DOCUMENTS_NO document_no
+                                        :DOCUMENTTYPE_ID documenttype_id
+                                        :DOCUMENT_URI document_uri
+                                        :FACE_URI face_uri
+                                        :ISSUE_DATE issue_date
+                                        :EXPIRE_DATE expire_date
+                                        :CREATED_BY (get (auth/token? token) :_id)})
+      ;; Update User Status to Verifying
+      (users/update-status conn/db {:ID (get (auth/token? token) :_id)
+                                    :STATUS_ID  (get (stu/get-status-by-name conn/db {:STATUS_NAME "verifying"}) :id)})
       (reset! docs-id (uuid))
-      (ok {:message "Documents have been submitted "})
+      (ok {:message "Documents have been submitted successfully"})
       (catch Exception ex
         (writelog/op-log! (str "ERROR : FN SET-KYC" (.getMessage ex)))
         (ok {:error {:message "Something went wrong on our end"}})))
