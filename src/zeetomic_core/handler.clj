@@ -122,7 +122,10 @@
    :new_password s/Str})
 
 (s/defschema Set-kyc
-  {:document_no s/Str
+  {:nationality s/Str
+   :occupation s/Str
+   :address s/Str
+   :document_no s/Str
    :documenttype_id s/Str
    :document_uri s/Str
    :face_uri s/Str
@@ -421,6 +424,9 @@
        :summary "Submit KYC document to be approve by institution"
        :body [set-kyc Set-kyc]
        (userinfo/set-kyc! authorization
+                          (get set-kyc :nationality)
+                          (get set-kyc :occupation)
+                          (get set-kyc :address)
                           (get set-kyc :document_no)
                           (get set-kyc :documenttype_id)
                           (get set-kyc :document_uri)

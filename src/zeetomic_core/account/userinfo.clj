@@ -64,7 +64,7 @@
     (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
 
 (defn set-kyc!
-  [token document_no documenttype_id document_uri face_uri issue_date expire_date]
+  [token nationality occupation address document_no documenttype_id document_uri face_uri issue_date expire_date]
   (if (= (auth/authorized? token) true)
     (try
       (println "seting KYC...")
@@ -78,6 +78,9 @@
                                         :CREATED_BY (get (auth/token? token) :_id)})
       ;; Update User Status to Verifying
       (users/update-status conn/db {:ID (get (auth/token? token) :_id)
+                                    :NATIONALITY nationality
+                                    :OCCUPATION occupation
+                                    :ADDRESS address
                                     :STATUS_ID  (get (stu/get-status-by-name conn/db {:STATUS_NAME "verifying"}) :id)})
       (reset! docs-id (uuid))
       (ok {:message "Documents have been submitted successfully"})
