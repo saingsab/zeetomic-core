@@ -82,7 +82,9 @@
                                     :OCCUPATION occupation
                                     :ADDRESS address
                                     :STATUS_ID  (get (stu/get-status-by-name conn/db {:STATUS_NAME "verifying"}) :id)})
+      ; (println "Reseting UUID...")
       (reset! docs-id (uuid))
+      ; (println "Finish Jobs sending a response...")
       (ok {:message "Documents have been submitted successfully"})
       (catch Exception ex
         (writelog/op-log! (str "ERROR : FN SET-KYC" (.getMessage ex)))
