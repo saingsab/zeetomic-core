@@ -46,19 +46,21 @@
 //   }
 // };
 
-const accountSid = "ACf9a21024405643be5e14103572eefca5";
-const authToken = "5c3b92fb41ac3c1ce4152e92d5ceed75";
+// const accountSid = "ACf9a21024405643be5e14103572eefca5";
+// const authToken = "5c3b92fb41ac3c1ce4152e92d5ceed75";
+const accountSid = "ACb47fc250e00c33e95a1b307fe12424ee";
+const authToken = "56f827781ecad16ac920f4c01861a679";
 const client = require("twilio")(accountSid, authToken);
 
-exports.sendsms = async ctx => {
+exports.sendsms = async (ctx) => {
   try {
     client.messages
       .create({
         body: ctx.request.body.smscontent,
         from: "+12032049810",
-        to: ctx.request.body.phonenumber
+        to: ctx.request.body.phonenumber,
       })
-      .then(message => {
+      .then((message) => {
         console.log(message.sid);
       })
       .done();

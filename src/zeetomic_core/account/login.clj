@@ -104,17 +104,17 @@
         (writelog/op-log! (str "ERROR : " (.getMessage ex)))))
     (ok {:error {:message "Opps! your reset code was not correct!"}})))
 
-(defn change-password! 
+(defn change-password!
   [token current-password new-password]
-    (if (= (auth/authorized? token) true)
-      (if (hashers/check current-password (get (users/get-all-users-by-id conn/db {:ID (get (auth/token? token) :_id) }) :password))
-        (try 
-          (users/change-password conn/db {:ID (get (auth/token? token) :_id) :PASSWORD (hashers/derive new-password)})
-          (ok {:message "Your password successfully changed!"})
-          (catch Exception ex 
-            (writelog/op-log! (str "ERROR : " (.getMessage ex)))))
-        (ok {:error {:message "Opps! your current Password was not correct!"}}))
-      (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
+  (if (= (auth/authorized? token) true)
+    (if (hashers/check current-password (get (users/get-all-users-by-id conn/db {:ID (get (auth/token? token) :_id)}) :password))
+      (try
+        (users/change-password conn/db {:ID (get (auth/token? token) :_id) :PASSWORD (hashers/derive new-password)})
+        (ok {:message "Your password successfully changed!"})
+        (catch Exception ex
+          (writelog/op-log! (str "ERROR : " (.getMessage ex)))))
+      (ok {:error {:message "Opps! your current Password was not correct!"}}))
+    (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
 
 (defn change-pin!
   [token current-pin new-pin]
