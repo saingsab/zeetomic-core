@@ -160,3 +160,11 @@ WHERE PHONENUMBER   = :PHONENUMBER
 
 -- :name delete-user-by-phone :! :n
 DELETE FROM USERS WHERE PHONENUMBER = :PHONENUMBER
+
+-- :name get-wallet-by-phone :? :1
+SELECT WALLET,
+       FIRST_NAME,
+       MID_NAME,
+       LAST_NAME
+FROM USERS 
+WHERE PHONENUMBER = :PHONENUMBER

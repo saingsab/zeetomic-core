@@ -22,7 +22,8 @@
             [zeetomic-core.loyalty.branches :as branches]
             [zeetomic_core.loyalty.receipt :as receipts]
             [zeetomic-core.sto.whitelist :as whitelist]
-            [zeetomic-core.loyalty.genreward :as genreward]))
+            [zeetomic-core.loyalty.genreward :as genreward]
+            [zeetomic-core.account.walletlookup :as walletlookup]))
 
 (s/defschema User-mail
   {:email s/Str
@@ -131,6 +132,9 @@
    :face_uri s/Str
    :issue_date s/Str
    :expire_date s/Str})
+
+(s/defschema Wallet-lookup
+  {:phone s/Str})
 
 ; Waves Schema
 (s/defschema Waves-payment
@@ -438,6 +442,13 @@
        :header-params [authorization :- s/Str]
        :summary "Get list of document type"
        (userinfo/get-documenttype authorization))
+
+     (POST "/wallet-lookup" []
+       :header-params [authorization :- s/Str]
+       :summary "Lookup wallet by phone number"
+       :body [wallet-lookup Wallet-lookup]
+       (walletlookup/get-wallet authorization
+                                (get wallet-lookup :phone)))
 ; next
      )))
 
