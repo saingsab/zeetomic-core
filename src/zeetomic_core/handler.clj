@@ -109,9 +109,17 @@
 (s/defschema Phone
   {:phone s/Str})
 
+(s/defschema Email
+  {:email s/Str})
+
 (s/defschema Reset-password
   {:temp_code s/Str
    :phone s/Str
+   :password s/Str})
+
+(s/defschema Reset-password-by-email
+  {:temp_code s/Str
+   :email s/Str
    :password s/Str})
 
 (s/defschema Change-pin
@@ -396,6 +404,11 @@
        :summary "List all receipt activity"
        (receipts/get-receipt authorization))
 
+     (POST "/forget-password-by-email" []
+       :summary "Input User email address to received reseting code"
+       :body [email Email]
+       (login/forget-password-by-mail (get email :email)))
+
      (POST "/forget-password" []
        :summary "Input User phone number to received reseting code"
        :body [phone Phone]
@@ -404,9 +417,16 @@
      (POST "/reset-password" []
        :summary "Enter a valid reseting code and new password"
        :body [reset-password Reset-password]
-       (login/reset-password! (get reset-password :temp-code)
+       (login/reset-password! (get reset-password :temp_code)
                               (get reset-password :phone)
                               (get reset-password :password)))
+
+     (POST "/reset-password-by-email" []
+       :summary "Enter a valid reseting cod and new password"
+       :body [reset-password-by-email Reset-password-by-email]
+       (login/reset-password-by-mail! (get reset-password-by-email :temp_code)
+                                      (get reset-password-by-email :email)
+                                      (get reset-password-by-email :password)))
 
      (POST "/change-pin" []
        :header-params [authorization :- s/Str]

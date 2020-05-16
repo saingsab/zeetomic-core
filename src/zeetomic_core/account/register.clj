@@ -40,7 +40,7 @@
         ; Send email function here
         (mailling/send-mail! email
                              "Activation Required"
-                             (str "Welcome to Zeetomic! <br/> <br/> To complete verification please click the link below <br/> <br/><a href='https://" (str (get env :baseapi)) ".zeetomic.com/pub/v1/account-confirmation?userid=" @user-id "&verification-code=" @temp-token "' style='padding:10px 28px;background:#0072BC;color:#fff;text-decoration:none' target='_blank' data-saferedirecturl='https://api.zeetomic.com/pub/v1/account-confirmation?userid=" @user-id "&verification-code=" @temp-token "' >Verify Email</a> <br/> <br/> Best regards, <br/> Zeetomic Team"))
+                             (str "Welcome to Zeetomic! <br/> <br/> To complete verification please click the link below <br/> <br/><a href='https://" (str (get env :baseapi)) ".zeetomic.com/pub/v1/account-confirmation?userid=" @user-id "&verification-code=" @temp-token "' style='padding:10px 28px;background:#0072BC;color:#fff;text-decoration:none' target='_blank' data-saferedirecturl='https://api.zeetomic.com/pub/v1/account-confirmation?userid=" @user-id "&verification-code=" @temp-token "' >Verify Email</a> <br/> <br/> Best regards, <br/> Zeetomic Team <br/> https://zeetomic.com"))
         (reset! user-id (uuid))
         (reset! temp-token (uuid))
         (ok {:message "Successfully registered!"})

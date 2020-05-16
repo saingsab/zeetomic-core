@@ -11,6 +11,7 @@
             [zeetomic-core.util.validate :as validate]
             [zeetomic-core.util.ed :as ed]
             [clj-time.core :as time]
+            [zeetomic-core.util.mailling :as mailling]
             [ring.util.http-response :refer :all]
             [zeetomic-core.util.writelog :as writelog]
             [aero.core :refer (read-config)]))
@@ -79,6 +80,27 @@
         (ok {:error {:message "Sorry, your user login and password are not active"}})))
     (ok {:message "Your phone number doesn't seem right!"})))
 
+;; Forget password request by email
+(defn forget-password-by-mail
+  [email]
+  (if (= (email-not-exist? email) true)
+    (ok {:message "Your email does not exist!"})
+    (try
+    ; Create Temp code
+      (users/update-temp-mail conn/db {:EMAIL email :TEMP_TOKEN @pin-code})
+   ; Sending temp code.
+      (mailling/send-mail! email
+                           "Resetting your Zeetomic password"
+                           (str "Someone has asked to reset the password for your account.</br>If you did not request a password reset, you can disregard this email. No changes have been made to your account. <br/> <br/> 
+                                 Below is your reset code:<br/> <br/>
+                                 " @pin-code "<br/> <br/> Best regards, <br/> Zeetomic Team <br/> https://zeetomic.com"))
+
+      (reset! pin-code (genpin/getpin))
+      (ok {:message "We have sent you reset code please check your email"})
+      (catch Exception ex
+        (writelog/op-log! (str "ERROR : " (.getMessage ex)))))))
+
+;; forget password request by phone
 (defn forget-password
   [phone]
   (if (= (phone-not-exist? phone) true)
@@ -92,6 +114,18 @@
       (ok {:message "We have sent you reset code please check your SMS!"})
       (catch Exception ex
         (writelog/op-log! (str "ERROR : " (.getMessage ex)))))))
+
+;; Reset Password by email
+(defn reset-password-by-mail!
+  [temp-code email password]
+  (if (= temp-code (get (users/get-users-by-mail conn/db {:EMAIL email}) :temp_token))
+    (try
+    ; match user and start reset new password
+      (users/reset-password-by-mail conn/db {:EMAIL email :PASSWORD (hashers/derive password)})
+      (ok {:message "Your password successfully updated!"})
+      (catch Exception ex
+        (writelog/op-log! (str "ERROR : " (.getMessage ex)))))
+    (ok {:error {:message "Opps! your reset code was not correct!"}})))
 
 (defn reset-password!
   [temp-code phone password]
