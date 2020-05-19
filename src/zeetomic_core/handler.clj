@@ -8,6 +8,7 @@
             [zeetomic-core.util.conn :as conn]
             [zeetomic-core.account.register :as register]
             [zeetomic-core.account.login :as login]
+            [zeetomic-core.business.partnerlogin :as partnerlogin]
             [zeetomic-core.account.userinfo :as userinfo]
             [zeetomic-core.account.activation :as activation]
             [zeetomic-core.middleware.auth :as auth]
@@ -233,6 +234,12 @@
        :body [user User-mail]
        :summary "Login with email address get back token"
        (login/loginbyemail (get user :email) (get user :password)))
+
+    ;  partnerlogin
+     (POST "/partnerlogin" []
+       :body [user User-mail]
+       :summary "Login with email address get back token, Only partner are allowed"
+       (partnerlogin/partner-login (get user :email) (get user :password)))
 
      (POST "/loginbyphone" []
        :body [user User-phone]
