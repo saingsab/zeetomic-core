@@ -1,6 +1,7 @@
 (ns zeetomic-core.loyalty.branches
   (:require [zeetomic-core.db.branches :as branches]
             [zeetomic-core.db.merchant :as merchant]
+            [zeetomic-core.db.users :as users]
             [zeetomic-core.middleware.auth :as auth]
             [zeetomic-core.util.conn :as conn]
             [zeetomic-core.util.writelog :as writelog]
@@ -60,5 +61,29 @@
       (ok (branches/list-all-branches conn/db))
       (catch Exception ex
         (writelog/op-log! (str "ERROR : " (.getMessage ex)))
+        (ok {:error {:message "Something went wrong on our end"}})))
+    (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
+
+(defn granted-user!
+  [token branches-name email]
+  (if (= (auth/authorized? token) true)
+    (let [created-by (get (auth/token? token) :_id)]
+      (if (= created-by (get (merchant/get-merchants-by-owner conn/db {:CREATED_BY created-by}) :created_by))
+        (try
+          (branches/granted-to conn/db {:BRANCHES_NAME branches-name :GRANTED_FOR (get (users/get-users-by-mail conn/db {:EMAIL email}) :id)})
+          (ok {:message (str "Successfully granted " email " To access" branches-name)})
+          (catch Exception ex
+            (writelog/op-log! (str "ERROR : FN granted-user! " (.getMessage ex)))
+            (ok {:error {:message "Something went wrong on our end"}})))
+        (ok {:error {:message "Only merchant creator can update branches!"}})))
+    (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
+
+(defn get-branches-by-granted
+  [token]
+  (if (= (auth/authorized? token) true)
+    (try
+      (ok (branches/list-branches-by-granted conn/db {:GRANTED_FOR (get (auth/token? token) :_id)}))
+      (catch Exception ex
+        (writelog/op-log! (str "ERROR : get-branches-by-granted " (.getMessage ex)))
         (ok {:error {:message "Something went wrong on our end"}})))
     (unauthorized {:error {:message "Unauthorized operation not permitted"}})))

@@ -12,7 +12,8 @@ CREATE TABLE IF NOT EXISTS BRANCHES (
     IS_ACTIVE BOOLEAN NOT NULL default TRUE,
     CREATED_AT timestamp NOT NULL default current_timestamp,
     UPDATED_AT timestamp,
-    CREATED_BY VARCHAR (36)
+    CREATED_BY VARCHAR (36),
+    GRANTED_FOR VARCHAR (36)
 )
 
 -- :name drop-branches-table :!
@@ -49,3 +50,21 @@ SELECT BRANCHES_NAME,
         LOGO_URI,
         IS_ACTIVE
  FROM BRANCHES
+
+ --:name list-branches-by-granted :? :1
+SELECT BRANCHES_NAME,
+        ADDRESS,
+        REWARD_RATES,
+        ASSET_CODE,
+        MINIMUM_SPEND,
+        LOGO_URI,
+        IS_ACTIVE
+ FROM BRANCHES
+ WHERE GRANTED_FOR = :GRANTED_FOR
+
+ -- ALTER TABLE branches
+ -- ADD GRANTED_FOR VARCHAR (36); 
+ -- :name granted-to :! :n
+UPDATE BRANCHES
+SET GRANTED_FOR         = :GRANTED_FOR
+WHERE BRANCHES_NAME = :BRANCHES_NAME

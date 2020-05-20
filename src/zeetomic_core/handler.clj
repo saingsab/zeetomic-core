@@ -65,6 +65,10 @@
   {:merchant_name s/Str
    :short_name s/Str})
 
+(s/defschema Branches-granted
+  {:branches_name s/Str
+   :email s/Str})
+
 (s/defschema Update-merchant
   {:id s/Str
    :merchant_name s/Str
@@ -311,6 +315,7 @@
                  (get send-payment :destination)
                  (get send-payment :amount)
                  (get send-payment :memo)))
+; Customer Loyalty Program
 
      (POST "/add-merchant" []
        :header-params [authorization :- s/Str]
@@ -410,6 +415,21 @@
        :header-params [authorization :- s/Str]
        :summary "List all receipt activity"
        (receipts/get-receipt authorization))
+
+     (POST "/branches-granted" []
+       :header-params [authorization :- s/Str]
+       :body [branches-granted Branches-granted]
+       :summary "Enter the Branches Name and granted user to be able to manage the branches"
+       (branches/granted-user! authorization
+                               (get branches-granted :branches_name)
+                               (get branches-granted :email)))
+
+     (GET "/branches-granted" []
+       :header-params [authorization :- s/Str]
+       :summary "Get list all greanted branches"
+       (branches/get-branches-by-granted authorization))
+
+    ;  ------------ END of Customer Loyalty----------------
 
      (POST "/forget-password-by-email" []
        :summary "Input User email address to received reseting code"
