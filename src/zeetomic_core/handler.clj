@@ -92,7 +92,7 @@
    :minimum_spend s/Str
    :approval_code s/Str
    :logo_uri s/Str
-   :is-active s/Bool})
+   :is_active s/Bool})
 
 
 (s/defschema Receipt
@@ -377,7 +377,7 @@
                                   (get update-branches :minimum_spend)
                                   (get update-branches :approval_code)
                                   (get update-branches :logo_uri)
-                                  (get update-branches :is-active)))
+                                  (get update-branches :is_active)))
      (GET "/get-all-branches" []
        :header-params [authorization :- s/Str]
        :summary "Listing all branches"
