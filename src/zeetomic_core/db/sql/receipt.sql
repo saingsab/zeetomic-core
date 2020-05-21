@@ -49,3 +49,19 @@ SELECT * FROM RECEIPTS
 SELECT * FROM RECEIPTS
 WHERE UPDATED_BY = :UPDATED_BY
 ORDER BY UPDATED_BY DESC
+
+-- :name transactions-report :? :* 
+SELECT r.LOCATION, 
+       u.FIRST_NAME, 
+       u.MID_NAME, 
+       u.LAST_NAME, 
+       u.EMAIL, 
+       u.PHONENUMBER, 
+       r.AMOUNT, 
+       r.REWARDS, 
+       r.CREATED_AT  
+
+FROM RECEIPTS AS r 
+INNER JOIN USERS AS u
+ON u.ID=r.CREATED_BY
+ORDER BY r.CREATED_AT DESC

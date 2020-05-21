@@ -87,3 +87,13 @@
         (writelog/op-log! (str "ERROR : get-branches-by-granted " (.getMessage ex)))
         (ok {:error {:message "Something went wrong on our end"}})))
     (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
+
+(defn get-branches-created-by
+  [token]
+  (if (= (auth/authorized? token) true)
+    (try
+      (ok (branches/list-branches-created-by conn/db {:CREATED_BY (get (auth/token? token) :_id)}))
+      (catch Exception ex
+        (writelog/op-log! (str "ERROR : get-branches-by-granted " (.getMessage ex)))
+        (ok {:error {:message "Something went wrong on our end"}})))
+    (unauthorized {:error {:message "Unauthorized operation not permitted"}})))

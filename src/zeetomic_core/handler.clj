@@ -429,6 +429,10 @@
        :summary "Get list all greanted branches"
        (branches/get-branches-by-granted authorization))
 
+     (GET "/branches-created-by" []
+       :header-params [authorization :- s/Str]
+       :summary "Show created by only"
+       (branches/get-branches-created-by authorization))
     ;  ------------ END of Customer Loyalty----------------
 
      (POST "/forget-password-by-email" []
