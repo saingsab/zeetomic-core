@@ -50,7 +50,7 @@ SELECT * FROM RECEIPTS
 WHERE UPDATED_BY = :UPDATED_BY
 ORDER BY UPDATED_BY DESC
 
--- :name transactions-report :? :* 
+-- :name transactions-report :? :1
 SELECT r.LOCATION, 
        u.FIRST_NAME, 
        u.MID_NAME, 
@@ -59,9 +59,13 @@ SELECT r.LOCATION,
        u.PHONENUMBER, 
        r.AMOUNT, 
        r.REWARDS, 
-       r.CREATED_AT  
+       r.CREATED_AT,
+       m.CREATED_BY  
 
 FROM RECEIPTS AS r 
 INNER JOIN USERS AS u
 ON u.ID=r.CREATED_BY
+INNER JOIN MERCHANTS AS m
+ON u.ID = b.CREATED_BY
+WHERE m.CREATED_BY = :CREATED_BY
 ORDER BY r.CREATED_AT DESC

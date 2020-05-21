@@ -433,6 +433,11 @@
        :header-params [authorization :- s/Str]
        :summary "Show created by only"
        (branches/get-branches-created-by authorization))
+
+     (GET "/get-transactions-report" []
+       :header-params [authorization :- s/Str]
+       :summary "List the tranaction by branches"
+       (receipts/get-reports authorization))
     ;  ------------ END of Customer Loyalty----------------
 
      (POST "/forget-password-by-email" []
