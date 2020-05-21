@@ -82,6 +82,9 @@
                                     :OCCUPATION occupation
                                     :ADDRESS address
                                     :STATUS_ID  (get (stu/get-status-by-name conn/db {:STATUS_NAME "verifying"}) :id)})
+      ; Update Document ID Into User Table
+      (users/update-doc-id conn/db {:ID (get (auth/token? token) :_id)
+                                    :DOCUMENTS_ID  @docs-id})
       ; (println "Reseting UUID...")
       (reset! docs-id (uuid))
       ; (println "Finish Jobs sending a response...")
