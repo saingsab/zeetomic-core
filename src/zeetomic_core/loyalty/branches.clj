@@ -31,7 +31,7 @@
     (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
 
 (defn update-branches?
-  [token branches-name address reward-rates asset-code minimum-spend approval-code is-active logo-uri]
+  [token branches-name address reward-rates asset-code minimum-spend approval-code logo-uri is-active]
 
   (if (= (auth/authorized? token) true)
     (let [created-by (get (auth/token? token) :_id)]
