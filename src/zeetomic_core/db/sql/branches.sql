@@ -51,7 +51,7 @@ SELECT BRANCHES_NAME,
         IS_ACTIVE
  FROM BRANCHES
 
- --:name list-branches-created-by :? :1
+ --:name list-branches-created-by :? :*
 SELECT BRANCHES_NAME,
         ADDRESS,
         REWARD_RATES,
@@ -62,7 +62,7 @@ SELECT BRANCHES_NAME,
  FROM BRANCHES
  WHERE CREATED_BY = :CREATED_BY
 
- --:name list-branches-by-granted :? :1
+ --:name list-branches-by-granted :? :*
 SELECT BRANCHES_NAME,
         ADDRESS,
         REWARD_RATES,

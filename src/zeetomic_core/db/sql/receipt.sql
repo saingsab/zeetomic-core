@@ -50,7 +50,7 @@ SELECT * FROM RECEIPTS
 WHERE UPDATED_BY = :UPDATED_BY
 ORDER BY UPDATED_BY DESC
 
--- :name transactions-report :? :1
+-- :name transactions-report :? :*
 SELECT r.LOCATION, 
        u.FIRST_NAME, 
        u.MID_NAME, 
