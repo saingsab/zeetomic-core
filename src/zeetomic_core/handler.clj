@@ -102,6 +102,18 @@
    :image_uri s/Str
    :approval_code s/Str})
 
+(s/defschema Reports-from-to-date
+  {:from_date s/Str
+   :to_date s/Str})
+
+(s/defschema Reports-from-to-date-by-location
+  {:from_date s/Str
+   :to_date s/Str
+   :location s/Str})
+
+(s/defschema Reports-by-location
+  {:location s/Str})
+
 (s/defschema Genqr
   {:location s/Str
    :approval_code s/Str
@@ -438,6 +450,30 @@
        :header-params [authorization :- s/Str]
        :summary "List the tranaction by branches"
        (receipts/get-reports authorization))
+
+     (POST "/reports-from-to-date" []
+       :header-params [authorization :- s/Str]
+       :body [reports-from-to-date Reports-from-to-date]
+       :summary "List the tranaction Between date"
+       (receipts/get-reports-from-to-date authorization
+                                          (get reports-from-to-date :from_date)
+                                          (get reports-from-to-date :to_date)))
+
+     (POST "/reports-from-to-date-by-location" []
+       :header-params [authorization :- s/Str]
+       :body [reports-from-to-date-by-location Reports-from-to-date-by-location]
+       :summary "List the tranaction Between date"
+       (receipts/get-trx-from-to-date-by-location authorization
+                                                  (get reports-from-to-date-by-location :from_date)
+                                                  (get reports-from-to-date-by-location :to_date)
+                                                  (get reports-from-to-date-by-location :location)))
+
+     (POST "/reports-by-location" []
+       :header-params [authorization :- s/Str]
+       :body [reports-by-location Reports-by-location]
+       :summary "List the tranaction Between date"
+       (receipts/get-trx-by-location authorization
+                                     (get reports-by-location :location)))
     ;  ------------ END of Customer Loyalty----------------
 
      (POST "/forget-password-by-email" []

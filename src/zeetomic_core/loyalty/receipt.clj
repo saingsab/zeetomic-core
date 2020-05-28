@@ -7,7 +7,8 @@
             [zeetomic-core.operation.pay :as pay]
             [zeetomic-core.db.users :as users]
             [zeetomic-core.util.ed :as ed]
-            [ring.util.http-response :refer :all]))
+            [ring.util.http-response :refer :all]
+            [clojure.instant :as instant]))
 
 (def txid (atom ""))
 
@@ -77,6 +78,42 @@
     (try
       (ok (receipt/transactions-report conn/db {:CREATED_BY (get (auth/token? token) :_id)}))
       (catch Exception ex
-        (writelog/op-log! (str "ERROR : " (.getMessage ex)))
+        (writelog/op-log! (str "ERROR : get-reports " (.getMessage ex)))
+        (ok {:error {:message "Something went wrong on our end"}})))
+    (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
+
+(defn get-reports-from-to-date
+  [token from-date to-date]
+  (if (= (auth/authorized? token) true)
+    (try
+      (ok (receipt/trx-from-to-date conn/db {:CREATED_BY (get (auth/token? token) :_id)
+                                             :FROM_DATE from-date
+                                             :TO_DATE to-date}))
+      (catch Exception ex
+        (writelog/op-log! (str "ERROR : FN get-reports-from-to-date " (.getMessage ex)))
+        (ok {:error {:message "Something went wrong on our end"}})))
+    (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
+
+(defn get-trx-from-to-date-by-location
+  [token from-date to-date location]
+  (if (= (auth/authorized? token) true)
+    (try
+      (ok (receipt/trx-from-to-date-by-location conn/db {:CREATED_BY (get (auth/token? token) :_id)
+                                                         :FROM_DATE from-date
+                                                         :TO_DATE to-date
+                                                         :LOCATION location}))
+      (catch Exception ex
+        (writelog/op-log! (str "ERROR : FN get-reports-from-to-date " (.getMessage ex)))
+        (ok {:error {:message "Something went wrong on our end"}})))
+    (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
+
+(defn get-trx-by-location
+  [token location]
+  (if (= (auth/authorized? token) true)
+    (try
+      (ok (receipt/trx-by-location conn/db {:CREATED_BY (get (auth/token? token) :_id)
+                                            :LOCATION location}))
+      (catch Exception ex
+        (writelog/op-log! (str "ERROR : FN get-reports-from-to-date " (.getMessage ex)))
         (ok {:error {:message "Something went wrong on our end"}})))
     (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
