@@ -161,6 +161,21 @@
 (s/defschema Wallet-lookup
   {:phone s/Str})
 
+; APIKEY
+(s/defschema Apikeys
+  {:apikey s/Str
+  :apisec s/Str})
+
+  (s/defschema Paybyapi
+    {:id s/Str
+     :apikey s/Str 
+     :apisec s/Str 
+     :destination s/Str 
+     :asset_code s/Str 
+     :amount s/Str 
+     :memo s/Str})
+
+
 ; Waves Schema
 (s/defschema Waves-payment
   {:pin s/Str
@@ -173,6 +188,8 @@
   {:trustoracc s/Str
    :assetcode s/Str
    :authcode s/Str})
+
+  
 
 (def app
   (api
@@ -203,6 +220,33 @@
         (get kpi-whitelist :trustoracc)
         (get kpi-whitelist :assetcode)
         (get kpi-whitelist :authcode))))
+
+        ; EXTERNAL API
+  (context "/apis/v1" []
+    :tags ["APIS"]
+    (GET "/request-api-key" []
+      :header-params [authorization :- s/Str]
+      :summary "Provide valide Token to return api keys"
+      (merchants/get-apikey authorization))
+
+    (POST "/get-wallet" []
+      :body [apikeys Apikeys]
+      :summary "Provide api key to get wallet"
+    (getwallet/gen-wallet-by-api (get apikeys :apikey) 
+                                 (get apikeys :apisec)))
+    
+    (POST "/payment" []
+      :body [paybyapi Paybyapi]
+      :summary "Pay from api to wallet"
+      (pay/pay-by-api (get paybyapi :id) 
+                   (get paybyapi :apikey) 
+                   (get paybyapi :apisec) 
+                   (get paybyapi :destination) 
+                   (get paybyapi :asset_code) 
+                   (get paybyapi :amount) 
+                   (get paybyapi :memo)))
+  ; next endpoine for external APIS
+  )
 
    (context "/ke/v1" []
     ;  :no-doc true

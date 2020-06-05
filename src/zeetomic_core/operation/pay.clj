@@ -3,6 +3,7 @@
             [zeetomic-core.middleware.auth :as auth]
             [zeetomic-core.util.ed :as ed]
             [zeetomic-core.db.users :as users]
+            [zeetomic-core.db.apiacc :as apiacc]
             [zeetomic-core.util.conn :as conn]
             [zeetomic-core.db.branches :as branches]
             [zeetomic-core.db.receipt :as receipt]
@@ -125,3 +126,23 @@
       (catch Exception ex
         (writelog/tx-log! (str "FAILDED : fetch tx history " (.getMessage ex)))))
     (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
+
+(defn pay-by-api
+  [id apikey apisec destination asset-code amount memo]
+  (if (and (= apikey (get (apiacc/get-api-by-id conn/db {:APIKEY apikey}) :apikey)) (= apisec (get (apiacc/get-api-by-id conn/db {:APIKEY apikey}) :apisec))) 
+    (try 
+      (ok (json/read-str 
+            (get 
+              (client/post (str (get env :sendpayment))
+              {:form-params {:senderKey (ed/decrypt (get (users/get-seed-by-id conn/db {:ID id}) :seed))
+                            :assetCode asset-code
+                            :destination destination
+                            :amount amount
+                            :memo memo}
+              :content-type :json})
+            :body)
+          :key-fn keyword))
+        ; Fee to be implemented
+       (catch Exception ex
+        (writelog/tx-log! (str "FAILDED : pay-by-api " (.getMessage ex)))))
+    (ok {:message {:error "Invalid API KEYS"}})))

@@ -1,10 +1,24 @@
 (ns zeetomic-core.loyalty.merchant
   (:require [zeetomic-core.db.merchant :as merchant]
+            [zeetomic-core.db.apiacc :as apiacc]
             [zeetomic-core.middleware.auth :as auth]
             [zeetomic-core.db.users :as users]
             [zeetomic-core.util.conn :as conn]
             [zeetomic-core.util.writelog :as writelog]
-            [ring.util.http-response :refer :all]))
+            [ring.util.http-response :refer :all])
+  (:import java.util.Base64))
+
+(defn uuid [] (str (java.util.UUID/randomUUID)))
+
+(defn encode [to-encode]
+  (.encodeToString (Base64/getEncoder) (.getBytes to-encode)))
+
+(defn is-partner?
+  [email]
+  (= true (get (users/get-users-by-mail conn/db {:EMAIL email}) :is_partner)))         
+    
+(def user-id (atom (uuid)))
+  
 
 (defn add-merchant!
   [token merchant-name short-name]
@@ -59,3 +73,19 @@
         (writelog/op-log! (.getMessage ex))
         (ok {:error {:message "Something went wrong on our end"}})))
     (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
+
+
+  (defn get-apikey
+    [token]
+    (if (= (auth/authorized? token) true)
+      (if (is-partner? (get (users/get-all-users-by-id conn/db {:ID (get (auth/token? token) :_id)}) :email)) 
+        (try 
+          (reset! user-id (uuid))
+          (apiacc/set-apikey conn/db {:ID @user-id :APIKEY (get (auth/token? token) :_id) :APISEC (encode (str @user-id token))})
+          (ok {:message {:apikey (get (auth/token? token) :_id) :apisec (encode (str @user-id token)) } })
+          (catch Exception ex
+            (writelog/op-log! (str "ERROR : get-apikey " (.getMessage ex)))
+            (ok {:error {:message "Something went wrong on our end"}})))
+        (ok {:error {:message "Your email address does not associated with partner program"}}))
+      (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
+  ; is-partner?              

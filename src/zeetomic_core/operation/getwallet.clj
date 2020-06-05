@@ -3,6 +3,7 @@
             [zeetomic-core.middleware.auth :as auth]
             [buddy.hashers :as hashers]
             [zeetomic-core.db.users :as users]
+            [zeetomic-core.db.apiacc :as apiacc]
             [zeetomic-core.util.conn :as conn]
             [zeetomic-core.util.ed :as ed]
             [clojure.data.json :as json]
@@ -12,6 +13,9 @@
             [zeetomic-core.util.writelog :as writelog]))
 
 (def env (read-config ".config.edn"))
+(defn uuid [] (str (java.util.UUID/randomUUID)))
+
+(def user-id (atom (uuid)))
 
 (defn wallets []
   (try
@@ -48,3 +52,19 @@
     ; False
       (ok {:message "Opp! look like you already had a wallet"}))
     (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
+
+  (defn gen-wallet-by-api
+    [apikey apisec]
+        (if (and (= apikey (get (apiacc/get-api-by-id conn/db {:APIKEY apikey}) :apikey)) (= apisec (get (apiacc/get-api-by-id conn/db {:APIKEY apikey}) :apisec))) 
+          (try 
+            ; add account to db
+            (reset! xwallet (wallets))
+            (reset! user-id (uuid))
+            (users/setup-wallet-by-api conn/db {:ID @user-id :WALLET (get @xwallet :wallet) :SEED (ed/encrypt (get @xwallet :seed)) :CREATED_BY apikey})
+            (addasset/add-assets! (get @xwallet :seed) "ZTO" (get env :assetIssuer))
+            ; return wallet 
+            (ok {:message {:id @user-id :wallet (get @xwallet :wallet)}})
+            (catch Exception ex
+              (writelog/op-log! (str "ERROR : gen-wallet-by-api " (.getMessage ex)))
+              {:error {:message "Internal server error"}}))
+          (ok {:message {:error "Invalid API KEYS"}})))

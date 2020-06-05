@@ -67,7 +67,3 @@
       (ok {:message "Your phone number already exists!"}))
   ; Fale
     (ok {:message "Your phone number doesn't seem right!"})))
-
-
-
-
