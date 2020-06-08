@@ -75,17 +75,24 @@
     (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
 
 
+  (defn if-apikey-exist? 
+    [apikey]
+    (apiacc/get-api-by-id conn/db {:APIKEY apikey}))
+
+  ; If no ke it's generate new key 
   (defn get-apikey
     [token]
     (if (= (auth/authorized? token) true)
       (if (is-partner? (get (users/get-all-users-by-id conn/db {:ID (get (auth/token? token) :_id)}) :email)) 
+      (if (nil? (if-apikey-exist? (get (auth/token? token) :_id))) 
         (try 
           (reset! user-id (uuid))
           (apiacc/set-apikey conn/db {:ID @user-id :APIKEY (get (auth/token? token) :_id) :APISEC (encode (str @user-id token))})
-          (ok {:message {:apikey (get (auth/token? token) :_id) :apisec (encode (str @user-id token)) } })
+          (ok {:message {:apikey (get (auth/token? token) :_id) :apisec (encode (str @user-id token))}})
           (catch Exception ex
             (writelog/op-log! (str "ERROR : get-apikey " (.getMessage ex)))
             (ok {:error {:message "Something went wrong on our end"}})))
+        (ok {:message {:apikey (get (if-apikey-exist? (get (auth/token? token) :_id)) :apikey) 
+                       :apisec (get (if-apikey-exist? (get (auth/token? token) :_id)) :apisec)}}))
         (ok {:error {:message "Your email address does not associated with partner program"}}))
-      (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
-  ; is-partner?              
+      (unauthorized {:error {:message "Unauthorized operation not permitted"}})))             
