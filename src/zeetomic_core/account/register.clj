@@ -5,10 +5,12 @@
             [zeetomic-core.util.conn :as conn]
             [zeetomic-core.db.users :as users]
             [zeetomic-core.db.status :as status]
+            [zeetomic-core.middleware.auth :as auth]
             [zeetomic-core.util.genpin :as genpin]
             [zeetomic-core.util.mailling :as mailling]
             [clj-http.client :as client]
             [ring.util.http-response :refer :all]
+            [zeetomic-core.util.writelog :as writelog]
             [aero.core :refer (read-config)]))
 
 (def env (read-config ".config.edn"))
@@ -24,6 +26,10 @@
 (defn phone-not-exist?
   [phone]
   (nil? (users/get-users-by-phone conn/db {:PHONENUMBER phone})))
+
+(defn get-phone-by-id
+  [id] 
+  (get (users/get-all-users-by-id conn/db {:ID id}) :phonenumber))
 
 (defn email-not-exist?
   [email]
@@ -67,3 +73,14 @@
       (ok {:message "Your phone number already exists!"}))
   ; Fale
     (ok {:message "Your phone number doesn't seem right!"})))
+
+  (defn invite-phone-number 
+    [token phone]
+    (if (= (auth/authorized? token) true)
+    (try 
+      (client/post (str (get env :smsendpoint)) {:form-params {:smscontent (str (get-phone-by-id (get (auth/token? token) :_id)) "invited you to join ZEETOMIC https://wallet.zeetomic.com") :phonenumber phone} :content-type :json})
+      (ok {:message "Successfully invited!"})
+      (catch Exception ex
+        (writelog/op-log! (str "ERROR : FN invite-phone-number " (.getMessage ex)))
+        {:error {:message "Something went wrong on our end"}}))
+    (unauthorized {:error {:message "Unauthorized operation not permitted"}})))

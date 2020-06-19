@@ -67,7 +67,7 @@ SELECT PIN FROM USERS
 WHERE ID = :ID
 
 -- :name get-users-by-id :? :1
--- :doc Create at 28APR2020
+-- :doc Create at 28APR2020 by Saing
 -- :doc Modified at 28APR2020 by Saing
 SELECT USERS.FIRST_NAME,
        USERS.MID_NAME,

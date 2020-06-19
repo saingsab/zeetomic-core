@@ -585,6 +585,13 @@
        :body [wallet-lookup Wallet-lookup]
        (walletlookup/get-wallet authorization
                                 (get wallet-lookup :phone)))
+
+     (POST "/invite-phonenumber" []
+      :header-params [authorization :- s/Str]
+      :summary "Inviting people to join throug phone number"
+      :body [phone Phone]
+      (register/invite-phone-number authorization
+                                    (get phone :phone)))
 ; next
      )))
 
