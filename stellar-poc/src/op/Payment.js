@@ -26,6 +26,7 @@ async function SendPayment(Seed, _assetCode, destination, amount, memo) {
   ]);
 
   const transaction = new StellarSdk.TransactionBuilder(sender, {
+    // fee: process.env.FEE,
     fee: 100,
     networkPassphrase: NETWORK_PASSPHRASE
   })
