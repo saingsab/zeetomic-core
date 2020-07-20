@@ -290,6 +290,11 @@
        :summary "Enter correct phone number and received confirmation code"
        (register/accountbyphone (get user :phone) (get user :password)))
 
+    (POST "/resend-code" []
+        :body [phone Phone]
+        :summary "Enter correct phone number and received confirmation code"
+        (register/resend-code (get phone :phone)))
+
      (POST "/loginbyemail" []
        :body [user User-mail]
        :summary "Login with email address get back token"

@@ -64,8 +64,8 @@
       (try
         ; SAVE to Database and send welcome message
         (users/register-users-by-phone conn/db {:ID (java.util.UUID/randomUUID) :PHONENUMBER phone :PASSWORD (hashers/derive password) :TEMP_TOKEN @pin-code :STATUS_ID status-id})
-        ; (client/post (str (get env :smsendpoint)) {:form-params {:smscontent (str "Your ZEETOMIC verification code is:" @pin-code) :phonenumber phone} :content-type :json})
-        (client/post (str (get env :smsendpoint)) {:form-params {:smscontent (str "Welcome to ZEETOMIC The Platform for the Issuance and Management of Digital Asset") :phonenumber phone} :content-type :json})
+        (client/post (str (get env :smsendpoint)) {:form-params {:smscontent (str "Your ZEETOMIC verification code is:" @pin-code) :phonenumber phone} :content-type :json})
+        ; (client/post (str (get env :smsendpoint)) {:form-params {:smscontent (str "Welcome to ZEETOMIC The Platform for the Issuance and Management of Digital Asset") :phonenumber phone} :content-type :json})
         (reset! pin-code (genpin/getpin))
         (ok {:message "Successfully registered!"})
         (catch Exception ex
@@ -84,3 +84,12 @@
         (writelog/op-log! (str "ERROR : FN invite-phone-number " (.getMessage ex)))
         {:error {:message "Something went wrong on our end"}}))
     (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
+
+  (defn resend-code 
+    [phone]
+    (try 
+      (client/post (str (get env :smsendpoint)) {:form-params {:smscontent (str "Your ZEETOMIC verification code is:" @pin-code) :phonenumber phone} :content-type :json})
+      (ok {:message (str "We've sent you an SMS with the code to " phone)})
+      (catch Exception ex
+        (writelog/op-log! (str "ERROR : FN resend-code " (.getMessage ex)))
+        {:error {:message "Something went wrong on our end"}})))

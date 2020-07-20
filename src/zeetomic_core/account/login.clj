@@ -23,6 +23,12 @@
 (def status-id
   (get (status/get-status-by-name conn/db {:STATUS_NAME "inactive"}) :id))
 
+(def inactive-status-id
+  (get (status/get-status-by-name conn/db {:STATUS_NAME "inactive"}) :id))
+
+(def disabled-status-id
+  (get (status/get-status-by-name conn/db {:STATUS_NAME "disabled"}) :id))
+
 (defn phone-not-exist?
   [phone]
   (nil? (users/get-users-by-phone conn/db {:PHONENUMBER phone})))
@@ -46,18 +52,21 @@
 
 (defn is-no-active-mail?
   [email]
-  (= status-id (get (users/get-users-by-mail conn/db {:EMAIL email}) :id)))
+  (or (= inactive-status-id (get (get (users/get-users-by-mail conn/db {:EMAIL email}) :status_id)) 
+      (= disabled-status-id (get (get (users/get-users-by-mail conn/db {:EMAIL email}) :status_id))))))
 
 (defn is-no-active-phone?
   [phone]
-  (= status-id (get (users/get-users-by-phone conn/db {:PHONENUMBER phone}) :id)))
+  (or (= inactive-status-id (get (users/get-users-by-phone conn/db {:PHONENUMBER phone}) :status_id)) 
+      (= disabled-status-id (get (users/get-users-by-phone conn/db {:PHONENUMBER phone}) :status_id))))
 
 (defn loginbyemail
   [email password]
   (if (= (validate/email? email) true)
     (if (= (email-not-exist? email) true)
       (ok {:message "Your email address does not exist!"})
-      (if (= (is-no-active-mail? email) false)
+    ; If the user status id is inactive or disabled
+      (if (= (is-no-active-mail? email) true)
         (if (= true (hashers/check password (get (users/get-users-by-mail conn/db {:EMAIL email}) :password)))
           (ok {:token (tokens (id-by-email email))})
           (ok {:error {:message "Login failed the username or password is incorrect"}}))
@@ -69,6 +78,7 @@
   (if (= (validate/phone? phone) true)
     (if (= (phone-not-exist? phone) true)
       (ok {:message "Your phone number does not exist!"})
+      ; If the user status id is inactive or disabled
       (if (= (is-no-active-phone? phone) false)
         (if (= true (hashers/check password (get (users/get-users-by-phone conn/db {:PHONENUMBER phone}) :password)))
           (try

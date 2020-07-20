@@ -36,13 +36,14 @@
   [token pin]
   (if (= (auth/authorized? token) true)
     (if (= true (is-wallet-nil? (get (auth/token? token) :_id)))
+    ; Need to check if the account is active or not.
     ; True
       (try
         (reset! xwallet (wallets))
         (future (Thread/sleep 5000)
                 (try
                   (users/setup-user-wallet conn/db {:ID (get (auth/token? token) :_id) :WALLET (get @xwallet :wallet) :SEED (ed/encrypt (get @xwallet :seed)) :PIN (hashers/derive pin)})
-                  (addasset/add-assets! (get @xwallet :seed) "ZTO" (get env :assetIssuer))
+                  (addasset/add-assets! (get @xwallet :seed) "SEL" (get env :assetIssuer))
                   (catch Exception ex
                     (writelog/op-log! (str "ERROR : Setup Wallet " (.getMessage ex))))))
         (ok {:message {:wallet (get @xwallet :wallet) :seed (get @xwallet :seed)}})
@@ -57,11 +58,11 @@
     [apikey apisec]
         (if (and (= apikey (get (apiacc/get-api-by-id conn/db {:APIKEY apikey}) :apikey)) (= apisec (get (apiacc/get-api-by-id conn/db {:APIKEY apikey}) :apisec))) 
           (try 
-            ; add account to db
+            ; write account to db
             (reset! xwallet (wallets))
             (reset! user-id (uuid))
             (users/setup-wallet-by-api conn/db {:ID @user-id :WALLET (get @xwallet :wallet) :SEED (ed/encrypt (get @xwallet :seed)) :CREATED_BY apikey})
-            (addasset/add-assets! (get @xwallet :seed) "ZTO" (get env :assetIssuer))
+            (addasset/add-assets! (get @xwallet :seed) "SEL" (get env :assetIssuer))
             ; return wallet 
             (ok {:message {:id @user-id :wallet (get @xwallet :wallet)}})
             (catch Exception ex
