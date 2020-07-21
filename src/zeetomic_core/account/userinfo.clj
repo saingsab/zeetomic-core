@@ -6,11 +6,17 @@
             [zeetomic-core.db.documents :as documents]
             [zeetomic-core.db.documenttype :as documenttype]
             [zeetomic-core.middleware.auth :as auth]
+            [clj-http.client :as client]
             [ring.util.http-response :refer :all]
+            [zeetomic-core.util.genpin :as genpin]
+            [aero.core :refer (read-config)]
             [zeetomic-core.util.writelog :as writelog]))
 
+(def env (read-config ".config.edn"))
 (defn uuid [] (str (java.util.UUID/randomUUID)))
 (def docs-id (atom (uuid)))
+
+(def pin-code (atom (genpin/getpin)))
 
 (def Status
   (get (stu/get-status-by-name conn/db {:STATUS_NAME "active"}) :id))
@@ -93,3 +99,17 @@
         (writelog/op-log! (str "ERROR : FN SET-KYC" (.getMessage ex)))
         (ok {:error {:message "Something went wrong on our end"}})))
     (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
+
+    ; Verify valid phone first before add to db
+  (defn add-phone-number
+    [token phone]
+    (if (= (auth/authorized? token) true)
+      (try
+        (users/set-phonenumber-by-id conn/db {:ID (get (auth/token? token) :_id) :PHONENUMBER phone :TEMP_TOKEN @pin-code})
+        (client/post (str (get env :smsendpoint)) {:form-params {:smscontent (str "Your ZEETOMIC verification code is:" @pin-code) :phonenumber phone} :content-type :json}) 
+        (reset! pin-code (genpin/getpin))
+        (ok {:message (str "We've sent you an SMS with the code to " phone)})
+        (catch Exception ex
+          (writelog/op-log! (str "ERROR : FN add-phone-number" (.getMessage ex)))
+          (ok {:error {:message "Something went wrong on our end"}})))
+      (unauthorized {:error {:message "Unauthorized operation not permitted"}})))

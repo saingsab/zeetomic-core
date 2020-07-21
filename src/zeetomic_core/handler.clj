@@ -309,7 +309,8 @@
      (POST "/loginbyphone" []
        :body [user User-phone]
        :summary "Login with phone number get back token"
-       (login/loginbyphone (get user :phone) (get user :password)))
+       (login/loginbyphone (get user :phone) 
+                            (get user :password)))
 
      (POST "/userprofile" []
        :header-params [authorization :- s/Str]
@@ -320,6 +321,13 @@
                                 (get profile :mid_name)
                                 (get profile :last_name)
                                 (get profile :gender)))
+                              
+     (POST "/add-phonenumber"  []
+      :header-params [authorization :- s/Str]
+      :body [phone Phone]
+      :summary "Add phone number to existing user to verify"
+      (userinfo/add-phone-number authorization
+                         (get phone :phone)))
 
      (GET "/userprofile" []
        :header-params [authorization :- s/Str]

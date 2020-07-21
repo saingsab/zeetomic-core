@@ -36,20 +36,23 @@
   [token pin]
   (if (= (auth/authorized? token) true)
     (if (= true (is-wallet-nil? (get (auth/token? token) :_id)))
-    ; Need to check if the account is active or not.
+    ; Account need to have phone verified.
     ; True
-      (try
-        (reset! xwallet (wallets))
-        (future (Thread/sleep 5000)
-                (try
-                  (users/setup-user-wallet conn/db {:ID (get (auth/token? token) :_id) :WALLET (get @xwallet :wallet) :SEED (ed/encrypt (get @xwallet :seed)) :PIN (hashers/derive pin)})
-                  (addasset/add-assets! (get @xwallet :seed) "SEL" (get env :assetIssuer))
-                  (catch Exception ex
-                    (writelog/op-log! (str "ERROR : Setup Wallet " (.getMessage ex))))))
-        (ok {:message {:wallet (get @xwallet :wallet) :seed (get @xwallet :seed)}})
-        (catch Exception ex
-          (writelog/op-log! (str "ERROR : " (.getMessage ex)))
-          {:error {:message "Internal server error"}}))
+    (if (and (not= (get (users/get-users-token conn/db {:ID (get (auth/token? token) :_id)}) :temp_token) "0") 
+             (nil? (get  (users/get-users-token conn/db {:ID (get (auth/token? token) :_id)}) :phonenumber)))
+          (ok {:message "Opp! You need to verify your phone number first"})
+          (try
+            (reset! xwallet (wallets))
+            (future (Thread/sleep 5000)
+                    (try
+                      (users/setup-user-wallet conn/db {:ID (get (auth/token? token) :_id) :WALLET (get @xwallet :wallet) :SEED (ed/encrypt (get @xwallet :seed)) :PIN (hashers/derive pin)})
+                      (addasset/add-assets! (get @xwallet :seed) "SEL" (get env :assetIssuer))
+                      (catch Exception ex
+                        (writelog/op-log! (str "ERROR : Setup Wallet " (.getMessage ex))))))
+            (ok {:message {:wallet (get @xwallet :wallet) :seed (get @xwallet :seed)}})
+            (catch Exception ex
+              (writelog/op-log! (str "ERROR : " (.getMessage ex)))
+              {:error {:message "Internal server error"}})))
     ; False
       (ok {:message "Opp! look like you already had a wallet"}))
     (unauthorized {:error {:message "Unauthorized operation not permitted"}})))

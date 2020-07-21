@@ -22,7 +22,7 @@
   [user-id temp-token]
   (if (= (get (temp-tokens user-id) :temp_token) temp-token)
     (try
-      (users/user-activation conn/db {:ID user-id :TEMP_TOKEN "0" :STATUS_ID status})
+      (users/user-activation conn/db {:ID user-id :TEMP_TOKEN "x" :STATUS_ID status})
       true
       (catch Exception ex
         (log/error ex)))

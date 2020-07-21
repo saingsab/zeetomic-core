@@ -52,8 +52,8 @@
 
 (defn is-no-active-mail?
   [email]
-  (or (= inactive-status-id (get (get (users/get-users-by-mail conn/db {:EMAIL email}) :status_id)) 
-      (= disabled-status-id (get (get (users/get-users-by-mail conn/db {:EMAIL email}) :status_id))))))
+  (or (= inactive-status-id (get (users/get-users-by-mail conn/db {:EMAIL email}) :status_id)) 
+      (= disabled-status-id (get (users/get-users-by-mail conn/db {:EMAIL email}) :status_id))))
 
 (defn is-no-active-phone?
   [phone]
@@ -66,7 +66,7 @@
     (if (= (email-not-exist? email) true)
       (ok {:message "Your email address does not exist!"})
     ; If the user status id is inactive or disabled
-      (if (= (is-no-active-mail? email) true)
+      (if (= (is-no-active-mail? email) false)
         (if (= true (hashers/check password (get (users/get-users-by-mail conn/db {:EMAIL email}) :password)))
           (ok {:token (tokens (id-by-email email))})
           (ok {:error {:message "Login failed the username or password is incorrect"}}))
