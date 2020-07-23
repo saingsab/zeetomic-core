@@ -89,6 +89,7 @@
     [phone]
     (try 
       (client/post (str (get env :smsendpoint)) {:form-params {:smscontent (str "Your ZEETOMIC verification code is:" @pin-code) :phonenumber phone} :content-type :json})
+      (reset! pin-code (genpin/getpin))
       (ok {:message (str "We've sent you an SMS with the code to " phone)})
       (catch Exception ex
         (writelog/op-log! (str "ERROR : FN resend-code " (.getMessage ex)))
