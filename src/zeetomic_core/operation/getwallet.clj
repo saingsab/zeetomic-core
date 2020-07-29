@@ -40,7 +40,8 @@
     ; True
     (if (and (not= (get (users/get-users-token conn/db {:ID (get (auth/token? token) :_id)}) :temp_token) "0") 
              (nil? (get  (users/get-users-token conn/db {:ID (get (auth/token? token) :_id)}) :phonenumber)))
-          (ok {:message "Opp! You need to verify your phone number first"})
+          (ok {:code "001"
+               :message "Opp! You need to verify your phone number first"})
           (try
             (reset! xwallet (wallets))
             (future (Thread/sleep 5000)
