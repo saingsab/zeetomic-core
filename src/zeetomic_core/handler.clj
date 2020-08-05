@@ -198,11 +198,11 @@
      :spec "/swagger.json"
      :options {:ui {:validatorUrl nil}}
      :data {:basePath "/"
-            :info {:title "Zeetomic-core"
-                   :description "Welcome to the ZEETOMIC API! Zeetomic is a platform APIs are a set of endpoints created to manage integrations with our asset-agnostic global payment and trading platform."
+            :info {:title "Selendra-core"
+                   :description "Welcome to the SELENDRA API! Selendra is a platform APIs are a set of endpoints created to manage integrations with our asset-agnostic global payment and trading platform."
                    :contact {:name "Officail Website"
                              :email "saing@procambodia.com"
-                             :url "https://www.zeetomic.com"}}
+                             :url "https://www.selendra.com"}}
             :tags [{:name "api", :description "endpoint"}]
             :securityDefinitions {:Authorization_JWT {:type "apiKey"
                                                       :name "Authorization"
