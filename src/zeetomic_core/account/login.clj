@@ -29,6 +29,9 @@
 (def disabled-status-id
   (get (status/get-status-by-name conn/db {:STATUS_NAME "disabled"}) :id))
 
+(def active-status-id
+  (get (status/get-status-by-name conn/db {:STATUS_NAME "active"}) :id))
+
 (defn phone-not-exist?
   [phone]
   (nil? (users/get-users-by-phone conn/db {:PHONENUMBER phone})))
@@ -96,14 +99,14 @@
   (if (= (email-not-exist? email) true)
     (ok {:message "Your email does not exist!"})
     (try
-    ; Create Temp code
-      (users/update-temp-mail conn/db {:EMAIL email :TEMP_TOKEN @pin-code})
+    ; Create Temp code/ update to active status
+      (users/update-temp-mail conn/db {:EMAIL email :TEMP_TOKEN @pin-code :STATUS_ID active-status-id})
    ; Sending temp code.
       (mailling/send-mail! email
-                           "Resetting your Zeetomic password"
+                           "Resetting your Selendra password"
                            (str "Someone has asked to reset the password for your account.</br>If you did not request a password reset, you can disregard this email. No changes have been made to your account. <br/> <br/> 
                                  Below is your reset code:<br/> <br/>
-                                 " @pin-code "<br/> <br/> Best regards, <br/> Zeetomic Team <br/> https://zeetomic.com"))
+                                 " @pin-code "<br/> <br/> Best regards, <br/> Selendra  Team <br/> https://selendra.com"))
 
       (reset! pin-code (genpin/getpin))
       (ok {:message "We have sent you reset code please check your email"})
@@ -119,7 +122,7 @@
     ; Create Temp code
       (users/update-temp conn/db {:PHONENUMBER phone :TEMP_TOKEN @pin-code})
    ; Sending temp code code.
-      (client/post (str (get env :smsendpoint)) {:form-params {:smscontent (str "Your ZEETOMIC reset code is:" @pin-code) :phonenumber phone} :content-type :json})
+      (client/post (str (get env :smsendpoint)) {:form-params {:smscontent (str "Your Selendra reset code is:" @pin-code) :phonenumber phone} :content-type :json})
       (reset! pin-code (genpin/getpin))
       (ok {:message "We have sent you reset code please check your SMS!"})
       (catch Exception ex

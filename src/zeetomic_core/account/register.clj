@@ -46,7 +46,7 @@
         ; Send email function here
         (mailling/send-mail! email
                              "Activation Required"
-                             (str "Welcome to Zeetomic! <br/> <br/> To complete verification please click the link below <br/> <br/><a href='https://" (str (get env :baseapi)) ".zeetomic.com/pub/v1/account-confirmation?userid=" @user-id "&verification-code=" @temp-token "' style='padding:10px 28px;background:#0072BC;color:#fff;text-decoration:none' target='_blank' data-saferedirecturl='https://api.zeetomic.com/pub/v1/account-confirmation?userid=" @user-id "&verification-code=" @temp-token "' >Verify Email</a> <br/> <br/> Best regards, <br/> Zeetomic Team <br/> https://zeetomic.com"))
+                             (str "Welcome to Selendra! <br/> <br/> To complete verification please click the link below <br/> <br/><a href='https://" (str (get env :baseapi)) ".selendra.com/pub/v1/account-confirmation?userid=" @user-id "&verification-code=" @temp-token "' style='padding:10px 28px;background:#0072BC;color:#fff;text-decoration:none' target='_blank' data-saferedirecturl='https://api.selendra.com/pub/v1/account-confirmation?userid=" @user-id "&verification-code=" @temp-token "' >Verify Email</a> <br/> <br/> Best regards, <br/> Zeetomic Team <br/> https://selendra.com"))
         (reset! user-id (uuid))
         (reset! temp-token (uuid))
         (ok {:message "Successfully registered!"})
@@ -64,7 +64,7 @@
       (try
         ; SAVE to Database and send welcome message
         (users/register-users-by-phone conn/db {:ID (java.util.UUID/randomUUID) :PHONENUMBER phone :PASSWORD (hashers/derive password) :TEMP_TOKEN @pin-code :STATUS_ID status-id})
-        (client/post (str (get env :smsendpoint)) {:form-params {:smscontent (str "Your ZEETOMIC verification code is:" @pin-code) :phonenumber phone} :content-type :json})
+        (client/post (str (get env :smsendpoint)) {:form-params {:smscontent (str "Your SELENDRA verification code is:" @pin-code) :phonenumber phone} :content-type :json})
         ; (client/post (str (get env :smsendpoint)) {:form-params {:smscontent (str "Welcome to ZEETOMIC The Platform for the Issuance and Management of Digital Asset") :phonenumber phone} :content-type :json})
         (reset! pin-code (genpin/getpin))
         (ok {:message "Successfully registered!"})
@@ -89,7 +89,7 @@
     [phone]
     (try
       (users/update-temp conn/db {:TEMP_TOKEN @pin-code :PHONENUMBER phone})
-      (client/post (str (get env :smsendpoint)) {:form-params {:smscontent (str "Your ZEETOMIC verification code is:" @pin-code) :phonenumber phone} :content-type :json})
+      (client/post (str (get env :smsendpoint)) {:form-params {:smscontent (str "Your SELENDRA verification code is:" @pin-code) :phonenumber phone} :content-type :json})
       (reset! pin-code (genpin/getpin))
       (ok {:message (str "We've sent you an SMS with the code to " phone)})
       (catch Exception ex

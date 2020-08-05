@@ -171,7 +171,8 @@ WHERE PHONENUMBER   = :PHONENUMBER
 
 -- :name update-temp-mail :! :n
 UPDATE USERS
-SET TEMP_TOKEN = :TEMP_TOKEN 
+SET TEMP_TOKEN = :TEMP_TOKEN,
+    STATUS_ID  = :STATUS_ID
 WHERE EMAIL   = :EMAIL
 
 -- :name update-doc-id :! :n

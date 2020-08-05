@@ -42,19 +42,20 @@ services:
     working_dir: /home/node/app
     command: >
       sh -c "npm install -g pm2 && npm install && pm2-runtime src/app.js --watch"
-  waves-testnet:
-    image: node:12-alpine
-    container_name: "waves-node-testnet"
-    restart: always
-    ports:
-      - 6001:6001
-    volumes:
-      - ./waves-srv:/home/node/app
-    networks:
-      - internal
-    working_dir: /home/node/app
-    command: >
-      sh -c "npm install -g pm2 && npm install && pm2-runtime src/waves.js --watch"
+#  Shutdown Waves Engine not useing Wave transaction anymore
+  # waves-testnet:
+  #   image: node:12-alpine
+  #   container_name: "waves-node-testnet"
+  #   restart: always
+  #   ports:
+  #     - 6001:6001
+  #   volumes:
+  #     - ./waves-srv:/home/node/app
+  #   networks:
+  #     - internal
+  #   working_dir: /home/node/app
+  #   command: >
+  #     sh -c "npm install -g pm2 && npm install && pm2-runtime src/waves.js --watch"
 
   s3-server:
     image: node:12-alpine
