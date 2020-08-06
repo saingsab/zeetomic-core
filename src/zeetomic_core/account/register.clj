@@ -49,7 +49,7 @@
                              (str "Welcome to Selendra! <br/> <br/> To complete verification please click the link below <br/> <br/><a href='https://" (str (get env :baseapi)) ".selendra.com/pub/v1/account-confirmation?userid=" @user-id "&verification-code=" @temp-token "' style='padding:10px 28px;background:#0072BC;color:#fff;text-decoration:none' target='_blank' data-saferedirecturl='https://api.selendra.com/pub/v1/account-confirmation?userid=" @user-id "&verification-code=" @temp-token "' >Verify Email</a> <br/> <br/> Best regards, <br/> Zeetomic Team <br/> https://selendra.com"))
         (reset! user-id (uuid))
         (reset! temp-token (uuid))
-        (ok {:message "Successfully registered!"})
+        (ok {:message (str "We've sent a message to "email" with a link to activate your account.")})
         (catch Exception ex
           (log/error ex)))
       (ok {:message "Your email account already exists!"}))
