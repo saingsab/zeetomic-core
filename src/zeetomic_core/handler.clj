@@ -189,6 +189,9 @@
    :assetcode s/Str
    :authcode s/Str})
 
+(s/defschema OAuth-token 
+  {:token s/Str})
+
   
 
 (def app
@@ -198,7 +201,7 @@
      :spec "/swagger.json"
      :options {:ui {:validatorUrl nil}}
      :data {:basePath "/"
-            :info {:title "Selendra-core"
+            :info {:title "Selendra-biz"
                    :description "Welcome to the SELENDRA API! Selendra is a platform APIs are a set of endpoints created to manage integrations with our asset-agnostic global payment and trading platform."
                    :contact {:name "Officail Website"
                              :email "saing@procambodia.com"
@@ -220,8 +223,22 @@
         (get kpi-whitelist :trustoracc)
         (get kpi-whitelist :assetcode)
         (get kpi-whitelist :authcode))))
-
-        ; EXTERNAL API
+  ; OAuth ID token
+  (context "/oauth/v1" []
+  ;  Uncomment no-doc to hide document
+  ; :no-doc true
+    :tags ["OAuth ID token"]
+    (POST "/login-from-google" []
+      :body [oauth-token OAuth-token]
+      :summary "Provide OAuth token return JWT token"
+      (login/login-from-google (get oauth-token :token)))
+      
+    (POST "/login-from-facebook" []
+      :body [oauth-token OAuth-token]
+      :summary "Provide OAuth token return JWT token"
+      (login/login-from-facebook  (get oauth-token :token))))
+      
+  ; EXTERNAL API
   (context "/apis/v1" []
     :tags ["APIS"]
     (GET "/request-api-key" []

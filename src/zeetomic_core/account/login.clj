@@ -14,9 +14,15 @@
             [zeetomic-core.util.mailling :as mailling]
             [ring.util.http-response :refer :all]
             [zeetomic-core.util.writelog :as writelog]
+            [clj-http.client :as client]
+            [clojure.data.json :as json]
             [aero.core :refer (read-config)]))
 
 (def env (read-config ".config.edn"))
+
+(defn uuid [] (str (java.util.UUID/randomUUID)))
+
+(def user-id (atom (uuid)))
 
 (def pin-code (atom (genpin/getpin)))
 
@@ -92,6 +98,75 @@
           (ok {:error {:message "Login failed the username or password is incorrect"}}))
         (ok {:error {:message "Sorry, your user login and password are not active"}})))
     (ok {:message "Your phone number doesn't seem right!"})))
+
+; Auth from OAuth ID token from facebook
+(defn post-req-facbook 
+  [access-token]
+  (try
+    (json/read-str
+    ; Googleapis V1
+     (get (client/post (str "https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key="(get env :firebase))
+                       {:form-params {:postBody (str "access_token="access-token"&providerId=facebook.com") 
+                                      :requestUri "http://localhost" 
+                                      :returnIdpCredential true
+                                      :returnSecureToken true}
+                        :content-type :json}) :body) :key-fn keyword)
+    (catch Exception ex
+      (writelog/op-log! (str "ERROR : " (.getMessage ex)))
+      "Internal server error")))
+
+; Auth from OAuth ID token from Google
+(defn post-req-google 
+  [id-token]
+  (try
+    (json/read-str
+    ; Googleapis V1
+     (get (client/post (str "https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key="(get env :firebase))
+                       {:form-params {:postBody (str "id_token="id-token"&providerId=google.com") 
+                                      :requestUri "http://localhost" 
+                                      :returnIdpCredential true
+                                      :returnSecureToken true}
+                        :content-type :json}) :body) :key-fn keyword)
+    (catch Exception ex
+      (writelog/op-log! (str "ERROR : " (.getMessage ex)))
+      "Internal server error")))
+
+(defn login-from-facebook 
+      [token]
+    ; If user email not exist in db then write to db and generate JWT
+    ; If invalid token from Oauth will return msg
+      (if (nil? (get (post-req-facbook token) :email))
+          (ok {:error {:message "Opp!, token is not valid"}})
+          (if (= (email-not-exist? (get (post-req-facbook token) :email)) true)
+            (try 
+              (println (str "EMAIL: "(get (post-req-facbook token) :email)))
+              (users/register-users-by-mail conn/db {:ID  @user-id  :EMAIL (get (post-req-facbook token) :email) :PASSWORD "******" :TEMP_TOKEN "0x" :STATUS_ID active-status-id})
+              (reset! user-id (uuid))
+              ; Sign JWT Token after write to db
+              (ok {:token (tokens (id-by-email (get (post-req-facbook token) :email)))})
+              (catch Exception ex
+                (writelog/op-log! (str "ERROR : " (.getMessage ex)))
+                (ok {:error {:message "Something went wrong on our end"}})))
+            ; Exisitng email just return the JWT
+            (ok {:token (tokens (id-by-email (get (post-req-facbook token) :email)))}))))
+
+(defn login-from-google
+  [token]
+; If user email not exist in db then write to db and generate JWT
+; If invalid token from Oauth will return msg
+  (if (nil? (get (post-req-google token) :email))
+      (ok {:error {:message "Opp!, token is not valid"}})
+      (if (= (email-not-exist? (get (post-req-google token) :email)) true)
+      (try 
+        (users/register-users-by-mail conn/db {:ID  @user-id  :EMAIL (get (post-req-google token) :email) :PASSWORD "******" :TEMP_TOKEN "0x" :STATUS_ID active-status-id})
+        (reset! user-id (uuid))
+        ; Sign JWT Token after write to db
+        (ok {:token (tokens (id-by-email (get (post-req-google token) :email)))})
+        (catch Exception ex
+          (writelog/op-log! (str "ERROR : " (.getMessage ex)))
+          (ok {:error {:message "Something went wrong on our end"}})))
+      ; Exisitng email just return the JWT
+      (ok {:token (tokens (id-by-email (get (post-req-google token) :email)))}))))
 
 ;; Forget password request by email
 (defn forget-password-by-mail
