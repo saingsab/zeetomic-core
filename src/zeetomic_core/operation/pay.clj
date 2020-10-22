@@ -45,9 +45,13 @@
 (defn get-portforlio
   [wallet]
   (try
-    (get (json/read-str (get (client/get (str (get env :horizon) "/accounts/" wallet)) :body) :key-fn keyword) :balances)
+    (json/read-str (get 
+                      (client/post (str (get env :selendpoint) "/balances")
+                                    {:form-params {:add wallet}
+      :content-type :json}) :body) :key-fn keyword)
     (catch Exception ex
-      {:error {:message "Look like you don't have a wallet yet!"}})))
+      (writelog/op-log! (str "ERROR : " (.getMessage ex)))
+      "Internal server error")))
 
 (defn get-trx-hostory
   [wallet]

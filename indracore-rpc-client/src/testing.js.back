@@ -1,0 +1,23 @@
+// const { ApiPromise, WsProvider } = require("@polkadot/api");
+import { ApiPromise, WsProvider } from '@polkadot/api';
+
+const wsProvider = new WsProvider('wss://rpc.polkadot.io');
+const ADDR = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY';
+async function async_msg() {
+    try {
+        const api = await ApiPromise.create({ provider: wsProvider });
+        const now = await api.query.timestamp.now();
+        const { nonce, data: balance } = await api.query.system.account(ADDR);
+        let msg = console.log(`${now}: balance of ${balance.free} and a nonce of ${nonce}`);
+        // console.log(msg);
+        await this.api.isReady;
+        // The length of an epoch (session) in Babe
+        // console.log(api.consts.babe.epochDuration.toNumber());
+        return;
+    }
+    catch (e) {
+        console.log('Error!', e);
+    }
+}
+
+async_msg();

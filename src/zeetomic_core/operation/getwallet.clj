@@ -21,7 +21,7 @@
   (try
     (json/read-str
      (get (client/post (str (get env :getwalletendpoint))
-                       {:form-params {:dkey (str (get env :dkey))}
+                       {:form-params nil
                         :content-type :json}) :body) :key-fn keyword)
     (catch Exception ex
       (writelog/op-log! (str "ERROR : " (.getMessage ex)))
@@ -47,7 +47,7 @@
             (future (Thread/sleep 5000)
                     (try
                       (users/setup-user-wallet conn/db {:ID (get (auth/token? token) :_id) :WALLET (get @xwallet :wallet) :SEED (ed/encrypt (get @xwallet :seed)) :PIN (hashers/derive pin)})
-                      (addasset/add-assets! (get @xwallet :seed) "SEL" (get env :assetIssuer))
+                      ; (addasset/add-assets! (get @xwallet :seed) "SEL" (get env :assetIssuer))
                       (catch Exception ex
                         (writelog/op-log! (str "ERROR : Setup Wallet " (.getMessage ex))))))
             (ok {:message {:wallet (get @xwallet :wallet) :seed (get @xwallet :seed)}})

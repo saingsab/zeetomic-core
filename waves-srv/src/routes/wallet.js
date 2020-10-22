@@ -20,7 +20,7 @@ exports.wallet = async ctx => {
     try {
         const seed = Waves.Seed.create();
         ctx.status = 200;
-        ctx.body = {wallet: seed.address, seed: seed.phrase};
+        ctx.body = { wallet: seed.address, seed: seed.phrase };
         return;
     } catch (e) {
         ctx.status = 200;
