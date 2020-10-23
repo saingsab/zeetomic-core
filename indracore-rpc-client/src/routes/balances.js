@@ -15,6 +15,7 @@ exports.balances = async ctx => {
 
     // Retrieve the account balance & nonce via the system module
     const { data: balance } = await api.query.system.account(ADDR);
+    const decimals = api.registry.chainDecimals;
 
     // console.log(`${now}: balance of ${balance.free / (10 ** 18)} and a nonce of ${nonce}`);
     try {
@@ -22,7 +23,7 @@ exports.balances = async ctx => {
         ctx.body = {
             data: {
                 timestamp: `${now}`,
-                balance: `${balance.free / (10 ** 18)}`,
+                balance: `${balance.free / (10 ** decimals)}`,
                 otherassets: 'balance on other contract'
             }
         }

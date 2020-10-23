@@ -72,25 +72,16 @@
     (try
       (if (hashers/check pin (get (users/get-pin-by-id conn/db {:ID (get (auth/token? token) :_id)}) :pin))
         (try
-          (future (Thread/sleep 3000)
-                  ; (if (= true (enought-balance? (get (users/get-users-by-id conn/db {:ID (get (auth/token? token) :_id)}) :wallet) "ZTO" 0.0002))
-                  ; Will Scheduale implement the Fee
-                  (try
-                    (println "... Init payment tx ...")
-                    (println (client/post (str (get env :sendpayment))
-                                          {:form-params {:senderKey (ed/decrypt (get (users/get-seed-by-id conn/db {:ID (get (auth/token? token) :_id)}) :seed))
-                                                         :assetCode asset-code
-                                                         :destination destination
-                                                         :amount amount
-                                                         :memo memo}
-                                           :content-type :json}))
-                    (println "... payment completed ...")
-                    (fee (ed/decrypt (get (users/get-seed-by-id conn/db {:ID (get (auth/token? token) :_id)}) :seed)))
-                    (catch Exception ex
-                      (.getMessage ex)))
-                    ; (writelog/tx-log! (str "FAILDED : FN Pay from : " (get (auth/token? token) :_id) " Out of ZTO ")))
-                  )
-          (ok {:message "Your transaction is on the way!"})
+            (println "... Init payment tx ...")
+            (println (client/post (str (get env :selendpoint) "/transfer")
+                                  {:form-params {:sender (ed/decrypt (get (users/get-seed-by-id conn/db {:ID (get (auth/token? token) :_id)}) :seed))
+                                                  :assetCode asset-code
+                                                  :dest destination
+                                                  :amount amount
+                                                  :memo memo}
+                                    :content-type :json}))
+          ;           (println "... payment completed ...")
+        (ok {:message "Your transaction is on the way!"})
           (catch Exception ex
             (writelog/tx-log! (str "FAILDED : FN Pay from : " (get (auth/token? token) :_id) " Out of ZTO "))))
         (ok {:error {:message "PIN does not correct!"}}))

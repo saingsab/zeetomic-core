@@ -24,7 +24,7 @@ App.use(_.post("/balances", balances.balances));
 // Server 
 try {
     App.listen(process.env.PORT);
-    console.log(`Waves Server Started at http://localhost:${process.env.PORT}`);
+    console.log(`Indracore-rpc-client Started at http://localhost:${process.env.PORT}`);
 }
 catch (e) {
     console.log(e);

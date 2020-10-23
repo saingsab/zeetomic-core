@@ -18,14 +18,16 @@ exports.transfer = async ctx => {
 
     const senderKey = keyring.addFromMnemonic(sender);
 
+    // Get Chain Decimalse from node
+    const decimals = api.registry.chainDecimals;
+
     // Create a extrinsic, transferring amount units to dest in xx amount
-    const transfer = api.tx.balances.transfer(dest, (BigInt(amount * (10 ** 18))));
+    const transfer = api.tx.balances.transfer(dest, (BigInt(amount * (10 ** decimals))));
 
     // Sign and send the transaction using our account
     const hash = await transfer.signAndSend(senderKey);
 
     try {
-        await api.isReady;
         ctx.status = 200;
         ctx.body = { message: `Transfer sent with hash ${hash.toHex()}` };
         return;
