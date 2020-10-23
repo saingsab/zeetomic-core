@@ -361,7 +361,7 @@
      (GET "/portforlio" []
        :header-params [authorization :- s/Str]
        :summary "display portfolio on user base"
-       (pay/portforlio authorization))
+       (pay/get-portforlio authorization))
 
      (GET "/trx-history" []
        :header-params [authorization :- s/Str]

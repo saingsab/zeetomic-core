@@ -42,16 +42,22 @@
                {:form-params {:seed seed}
                 :content-type :json}))
 
+(defn is-wallet-nil? [id]
+  (nil? (get (users/get-users-by-id conn/db {:ID id}) :wallet)))
+
 (defn get-portforlio
-  [wallet]
-  (try
-    (json/read-str (get 
-                      (client/post (str (get env :selendpoint) "/balances")
-                                    {:form-params {:add wallet}
-      :content-type :json}) :body) :key-fn keyword)
-    (catch Exception ex
-      (writelog/op-log! (str "ERROR : " (.getMessage ex)))
-      "Internal server error")))
+  [token]
+  (if (= true (is-wallet-nil? (get (auth/token? token) :_id)))
+    (ok {:error {:message "Look like you don't have a wallet yet!"}})
+    (try
+      (ok (json/read-str (get 
+                        (client/post (str (get env :selendpoint) "/balances")
+                                      {:form-params {:add (get (users/get-users-by-id conn/db {:ID (get (auth/token? token) :_id)}) :wallet)}
+        :content-type :json}) :body) :key-fn keyword))
+      (catch Exception ex
+        (writelog/op-log! (str "ERROR : " (.getMessage ex)))
+        "Internal server error"))
+  ))
 
 (defn get-trx-hostory
   [wallet]
