@@ -103,8 +103,6 @@
                                            :memo "Reward!"}
                              :content-type :json}))
       (println "Start FEE.....")
-      ; The Fee will be implemented here
-      ; (fee (ed/decrypt (get (users/get-seed-by-id conn/db {:ID (get sender :created_by)}) :seed)))
       (println "Rewarding Finished!")
       (catch Exception ex
         (writelog/tx-log! (str "FAILDED : REWARD! From " (get sender :branches_name) " To : " (.getMessage ex)))))))
