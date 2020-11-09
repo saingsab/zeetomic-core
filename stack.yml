@@ -87,7 +87,7 @@ services:
     container_name: "zeetomic-api-testnet"
     restart: always
     depends_on:
-      - node-testnet
+      - indracore-rpc-client
     ports:
       - 3001:3000
     volumes:
