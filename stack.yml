@@ -27,6 +27,7 @@ services:
       - web
     depends_on:
       - db-testnet
+
   # node-testnet:
   #   image: node:12-alpine
   #   container_name: "stellar-node-testnet"
@@ -54,6 +55,7 @@ services:
     working_dir: /home/node/app
     command: >
       sh -c "npm install -g pm2 && npm install && pm2-runtime src/app.js --watch"
+      
 #  Shutdown Waves Engine not useing Wave transaction anymore
   # waves-testnet:
   #   image: node:12-alpine
@@ -82,6 +84,7 @@ services:
     working_dir: /home/node/app
     command: >
       sh -c "npm install -g pm2 && npm install && pm2-runtime server.js --watch"
+
   apiserver:
     image: clojure
     container_name: "zeetomic-api-testnet"
