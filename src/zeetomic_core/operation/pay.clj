@@ -7,11 +7,14 @@
             [zeetomic-core.util.conn :as conn]
             [zeetomic-core.db.branches :as branches]
             [zeetomic-core.db.receipt :as receipt]
+            [zeetomic-core.db.trxarchive :as trxarchive]
             [clojure.data.json :as json]
             [zeetomic-core.util.writelog :as writelog]
             [ring.util.http-response :refer :all]
             [buddy.hashers :as hashers]
             [aero.core :refer (read-config)]))
+          
+(def txid (atom ""))
 
 (def env (read-config ".config.edn"))
 
@@ -62,7 +65,8 @@
 (defn get-trx-hostory
   [wallet]
   (try
-    (get (get (json/read-str (get (client/get (str (get env :horizon) "/accounts/" wallet "/operations?order=desc")) :body) :key-fn keyword) :_embedded) :records)
+    ; (get (get (json/read-str (get (client/get (str (get env :horizon) "/accounts/" wallet "/operations?order=desc")) :body) :key-fn keyword) :_embedded) :records)
+    (trxarchive/get-trx-by-account conn/db {:SENDER wallet :DESTINATION wallet})
     (catch Exception ex
       {:error {:message "Look like you don't have a wallet yet!"}})))
 
@@ -72,18 +76,31 @@
     (try
       (if (hashers/check pin (get (users/get-pin-by-id conn/db {:ID (get (auth/token? token) :_id)}) :pin))
         (try
+            (reset! txid (java.util.UUID/randomUUID))
             (println "... Init payment tx ...")
-            (println (client/post (str (get env :selendpoint) "/transfer")
+            (let [hash (json/read-str 
+                          (get (client/post (str (get env :selendpoint) "/transfer")
                                   {:form-params {:sender (ed/decrypt (get (users/get-seed-by-id conn/db {:ID (get (auth/token? token) :_id)}) :seed))
                                                   :assetCode asset-code
                                                   :dest destination
                                                   :amount amount
                                                   :memo memo}
-                                    :content-type :json}))
-          ;           (println "... payment completed ...")
+                                    :content-type :json}) :body) :key-fn keyword)]
+            ; (println (get hash :message))
+            ; save trx to local db
+            (trxarchive/add-trxarchive conn/db {:ID @txid 
+                                                :BLOCK nil 
+                                                :HASH (get hash :message) 
+                                                :SENDER (get (users/get-users-by-id conn/db {:ID (get (auth/token? token) :_id)}) :wallet)
+                                                :DESTINATION destination 
+                                                :AMOUNT (Float/parseFloat amount)
+                                                :FEE 0.0001 
+                                                :MEMO memo
+                                                :CREATED_BY (get (auth/token? token) :_id)}))
+          
         (ok {:message "Your transaction is on the way!"})
           (catch Exception ex
-            (writelog/tx-log! (str "FAILDED : FN Pay from : " (get (auth/token? token) :_id) " Out of ZTO "))))
+            (writelog/tx-log! (str "FAILDED : FN Pay from : " (get (auth/token? token) :_id) " Out of SEL "))))
         (ok {:error {:message "PIN does not correct!"}}))
       (catch Exception ex
         (writelog/op-log! (str "ERROR : " (.getMessage ex)))
@@ -95,14 +112,15 @@
   (let [sender (branches/get-branches-by-name conn/db {:BRANCHES_NAME branches-name})]
     (try
       (println (str "Start Rewarding....." amount))
-      (println (client/post (str (get env :sendpayment))
-                            {:form-params {:senderKey (ed/decrypt (get (users/get-seed-by-id conn/db {:ID (get sender :created_by)}) :seed))
+      (let [hash (json/read-str 
+                          (get :body) :key-fn keyword)])
+      (println (client/post (str (get env :selendpoint) "/transfer")
+                            {:form-params {:sender (ed/decrypt (get (users/get-seed-by-id conn/db {:ID (get sender :created_by)}) :seed))
                                            :assetCode (get sender :asset_code)
-                                           :destination destination
+                                           :dest destination
                                            :amount amount
                                            :memo "Reward!"}
                              :content-type :json}))
-      (println "Start FEE.....")
       (println "Rewarding Finished!")
       (catch Exception ex
         (writelog/tx-log! (str "FAILDED : REWARD! From " (get sender :branches_name) " To : " (.getMessage ex)))))))

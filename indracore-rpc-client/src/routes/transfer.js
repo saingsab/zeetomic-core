@@ -29,11 +29,12 @@ exports.transfer = async ctx => {
 
     try {
         ctx.status = 200;
-        ctx.body = { message: `Transfer sent with hash ${hash.toHex()}` };
+        ctx.body = { message: `${hash.toHex()}` };
         return;
 
     } catch (e) {
         ctx.status = 200;
+        console.log(`ERROR ${e.message}`);
         ctx.body = { message: `ERROR ${e.message}` };
         return;
     }
