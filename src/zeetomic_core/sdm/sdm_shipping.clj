@@ -15,5 +15,5 @@
           (ok (sdm-shipping-services/get-sdm-shipping-services conn/db))
         (catch Exception ex
           (writelog/op-log! (str "ERROR : FN get-users-by-owner " (.getMessage ex)))
-          {:error {:message "Internal server error"}})))
-  (unauthorized {:error {:message "Unauthorized operation not permitted"}}))
+          {:error {:message "Internal server error"}}))
+  (unauthorized {:error {:message "Unauthorized operation not permitted"}})))

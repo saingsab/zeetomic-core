@@ -8,14 +8,14 @@
 (def txid (atom ""))
 
 (defn add-sdm-products-images 
-  [token url product_id]
+  [token url product-id]
   (if (= (auth/authorized? token) true)
     (let [created-by (get (auth/token? token) :_id)]
       (try 
         (reset! txid (java.util.UUID/randomUUID))
         (sdm-products-images/add-sdm-products-images conn/db {:ID @txid
                                                               :URL url
-                                                              :PRODUCT_ID product_id 
+                                                              :PRODUCT_ID product-id 
                                                               :CREATED_BY created-by})
         ; will treat is silent save product image url
     (catch Exception ex

@@ -13,5 +13,5 @@
           (ok (sdm-product-categories/get-sdm-product-categories conn/db))
         (catch Exception ex
           (writelog/op-log! (str "ERROR : FN get-sdm-product-categories " (.getMessage ex)))
-          {:error {:message "Internal server error"}})))
-  (unauthorized {:error {:message "Unauthorized operation not permitted"}}))
+          {:error {:message "Internal server error"}}))
+  (unauthorized {:error {:message "Unauthorized operation not permitted"}})))

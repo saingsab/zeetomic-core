@@ -13,5 +13,5 @@
           (ok (sdm-order-status/get-sdm-order-status conn/db))
         (catch Exception ex
           (writelog/op-log! (str "ERROR : FN get-sdm-order-status " (.getMessage ex)))
-          {:error {:message "Internal server error"}})))
-  (unauthorized {:error {:message "Unauthorized operation not permitted"}}))
+          {:error {:message "Internal server error"}}))
+  (unauthorized {:error {:message "Unauthorized operation not permitted"}})))

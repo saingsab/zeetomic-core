@@ -24,7 +24,16 @@
             [zeetomic_core.loyalty.receipt :as receipts]
             [zeetomic-core.sto.whitelist :as whitelist]
             [zeetomic-core.loyalty.genreward :as genreward]
-            [zeetomic-core.account.walletlookup :as walletlookup]))
+            [zeetomic-core.account.walletlookup :as walletlookup]
+            ; Selendra market place
+            [zeetomic_core.sdm.sdm-products :as sdm-products]
+            [zeetomic_core.sdm.sdm-orders :as sdm-orders]
+            [zeetomic_core.sdm.sdm-order-status :as sdm-order-status]
+            [zeetomic_core.sdm.sdm-payment-options :as sdm-payment-options]
+            [zeetomic_core.sdm.sdm-product-categories :as sdm-product-categories]
+            [zeetomic_core.sdm.sdm-products-images :as sdm-products-images]
+            [zeetomic_core.sdm.sdm-shipping :as sdm-shipping]
+            [zeetomic_core.sdm.sdm-weight :as sdm-weight]))
 
 (s/defschema User-mail
   {:email s/Str
@@ -192,7 +201,28 @@
 (s/defschema OAuth-token 
   {:token s/Str})
 
-  
+; Selendra Market Place Schema
+(s/defschema Sdm-add-product
+  { :name s/Str
+    :price s/Str
+    :shipping s/Str
+    :weight s/Str
+    :description s/Str
+    :thumbnail s/Str
+    :category-id s/Str
+    :payment-id s/Str})
+
+(s/defschema Sdm-make-order 
+ { :product-id s/Str 
+   :qty s/Str
+   :shipping-address s/Str})
+
+(s/defschema Sdm-order-status 
+  {:order-id s/Str})
+
+(s/defschema Sdm-products-images
+  {:url s/Str
+  :product-id s/Str})
 
 (def app
   (api
@@ -204,7 +234,7 @@
             :info {:title "Selendra-biz"
                    :description "Welcome to the SELENDRA API! Selendra is a platform APIs are a set of endpoints created to manage integrations with our asset-agnostic global payment and trading platform."
                    :contact {:name "Officail Website"
-                             :email "saing@procambodia.com"
+                             :email "saing@selendra.org"
                              :url "https://www.selendra.com"}}
             :tags [{:name "api", :description "endpoint"}]
             :securityDefinitions {:Authorization_JWT {:type "apiKey"
@@ -264,6 +294,118 @@
                    (get paybyapi :memo)))
   ; next endpoine for external APIS
   )
+  ; Selendra Market Endpoint
+  (context "/sdm/v1" []
+    ;  :no-doc true
+     :tags ["Selendra Market API"]
+    ;  (POST "/wallet" []
+    ;    :body [req-wallet Req-wallet]
+    ;    :header-params [authorization :- s/Str]
+    ;    :summary "Provide PIN and get wallet"
+    ;    (waves-wallet/gen-wallet authorization
+    ;                             (get req-wallet :pin)))
+     (GET "/listing" []
+       :header-params [authorization :- s/Str]
+       :summary "Products listing"
+       (sdm-products/get-all-products authorization))
+
+     (GET "/listing-by-owner" []
+       :header-params [authorization :- s/Str]
+       :summary "Products listing by owner"
+       (sdm-products/get-products-by-owner authorization))
+     (POST "/add-product" []
+       :body [sdm-add-product Sdm-add-product]
+       :header-params [authorization :- s/Str]
+       :summary "Add product to listing"
+       (sdm-products/add-products authorization
+                                  (get sdm-add-product :name)
+                                  (get sdm-add-product :price)
+                                  (get sdm-add-product :shipping)
+                                  (get sdm-add-product :weight)
+                                  (get sdm-add-product :description)
+                                  (get sdm-add-product :thumbnail)
+                                  (get sdm-add-product :category-id)
+                                  (get sdm-add-product :payment-id)))
+                       
+     (GET "/list-order" []
+       :header-params [authorization :- s/Str]
+       :summary "List product order"
+       (sdm-orders/list-order authorization))
+      
+    (POST "/make-order" []
+       :body [sdm-make-order Sdm-make-order]
+       :header-params [authorization :- s/Str]
+       :summary "Making order product"
+       (sdm-orders/make-orders authorization
+                                  (get sdm-make-order :product-id) 
+                                  (get sdm-make-order :qty)
+                                  (get sdm-make-order :shipping-address)))
+      
+    (POST "/mark-order-payment" []
+       :body [sdm-order-status Sdm-order-status]
+       :header-params [authorization :- s/Str]
+       :summary "Mark payment on order"
+       (sdm-orders/update-order-success-pay authorization
+                                  (get sdm-order-status :order-id)))    
+                                  
+    (POST "/mark-order-shipment" []
+       :body [sdm-order-status Sdm-order-status]
+       :header-params [authorization :- s/Str]
+       :summary "Mark shipment on order"
+       (sdm-orders/update-order-shipment authorization
+                                  (get sdm-order-status :order-id)))
+
+    (POST "/mark-order-completed" []
+      :body [sdm-order-status Sdm-order-status]
+      :header-params [authorization :- s/Str]
+      :summary "Mark completed on order"
+      (sdm-orders/update-order-shipment authorization
+                                (get sdm-order-status :order-id)))
+
+    (GET "/order-status" []
+      :header-params [authorization :- s/Str]
+      :summary "List order status"
+      (sdm-order-status/get-sdm-order-status authorization)) 
+    
+    (GET "/payment-options" []
+      :header-params [authorization :- s/Str]
+      :summary "List payment options"
+      (sdm-payment-options/get-sdm-payment-options authorization)) 
+
+    (GET "/shipping-services" []
+      :header-params [authorization :- s/Str]
+      :summary "List shipping service"
+      (sdm-shipping/get-shipping-services authorization)) 
+
+    (GET "/product-categories" []
+      :header-params [authorization :- s/Str]
+      :summary "List product categories"
+      (sdm-product-categories/get-sdm-product-categories authorization)) 
+    
+    (POST "/products-images" []
+      :body [sdm-products-images Sdm-products-images]
+      :header-params [authorization :- s/Str]
+      :summary "Add images url per product"
+      (sdm-products-images/add-sdm-products-images authorization
+                                                  (get sdm-products-images :url)
+                                                  (get sdm-products-images :product-id))) 
+    
+    (POST "/get-products-images" []
+      :body [sdm-products-images Sdm-products-images]
+      :header-params [authorization :- s/Str]
+      :summary "Add images url per product"
+      (sdm-products-images/get-sdm-products-images-by-product-id authorization
+                                                                (get sdm-products-images :product-id)))
+    
+    (GET "/payment-options" []
+      :header-params [authorization :- s/Str]
+      :summary "List shipping-services"
+      (sdm-shipping/get-shipping-services authorization)) 
+
+    (GET "/weight-options" []
+      :header-params [authorization :- s/Str]
+      :summary "List shipping-services"
+      (sdm-weight/get-sdm-weight-options authorization))) 
 
    (context "/ke/v1" []
     ;  :no-doc true

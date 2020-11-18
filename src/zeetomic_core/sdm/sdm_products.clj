@@ -48,6 +48,6 @@
           (ok (sdm-products/get-all-products conn/db))
         (catch Exception ex
           (writelog/op-log! (str "ERROR : FN get-all-products " (.getMessage ex)))
-          {:error {:message "Internal server error"}})))
-  (unauthorized {:error {:message "Unauthorized operation not permitted"}}))
+          {:error {:message "Internal server error"}}))
+  (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
   

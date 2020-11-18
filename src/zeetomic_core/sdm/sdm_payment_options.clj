@@ -13,5 +13,5 @@
           (ok (sdm-payment-options/get-sdm-payment-options conn/db))
         (catch Exception ex
           (writelog/op-log! (str "ERROR : FN get-sdm-payment-options " (.getMessage ex)))
-          {:error {:message "Internal server error"}})))
-  (unauthorized {:error {:message "Unauthorized operation not permitted"}}))
+          {:error {:message "Internal server error"}}))
+  (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
