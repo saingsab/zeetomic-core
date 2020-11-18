@@ -20,6 +20,7 @@
     [dec]
     (get (sdm-order-status/get-sdm-order-status-by-dec conn/db {:ORDER_STATUS_DEC dec}) :id))
 
+; 1 Buyer make an order
 (defn make-orders 
   [token product-id qty shipping-address]
   (if (= (auth/authorized? token) true)
@@ -36,6 +37,7 @@
                                          :CREATED_BY created-by})
         ;[todo]
         ; Payment deduct from wallet.
+        ; Buyer send payment to Escrow account.
         (ok {:message "The order has been placed"})
     (catch Exception ex
         (writelog/op-log! (str "ERROR : FN make-orders " (.getMessage ex)))
@@ -55,6 +57,7 @@
             ; True lets product owner change order status
             (try
                 (sdm-orders/update-orders-status conn/db {:ID order-id :STATUS_ID (status-id "Pay Success")})
+                ; Seller sign into Escrow account request pay
                 (ok {:message "Order successfully paid"})
             (catch Exception ex
                 (writelog/op-log! (str "ERROR : FN update-order-success-pay " (.getMessage ex)))
@@ -96,6 +99,8 @@
                 (sdm-orders/update-orders-status conn/db {:ID order-id :STATUS_ID (status-id "Order Complete")})
                 ; mark products is sold
                 (sdm-products/set-products-to-sold conn/db {:ID (get (sdm-orders/get-orders-by-id conn/db {:ID order-id}) :product_id)})
+                ; [Todo]
+                ; Escrow account final sign from buyer or monderator
                 (ok {:message "Order successfully completed"})
             (catch Exception ex
                 (writelog/op-log! (str "ERROR : FN update-order-success-pay " (.getMessage ex)))
