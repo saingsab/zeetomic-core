@@ -21,20 +21,20 @@
     (get (sdm-order-status/get-sdm-order-status-by-dec conn/db {:ORDER_STATUS_DEC dec}) :id))
 
 ; 1 Buyer make an order
-(defn make-orders 
+(defn make-order 
   [token product-id qty shipping-address]
   (if (= (auth/authorized? token) true)
     (let [created-by (get (auth/token? token) :_id)]
       (try 
         (reset! txid (java.util.UUID/randomUUID))
-        (sdm-orders/make-orders conn/db {:ID @txid
-                                         :PRODUCT_ID product-id 
-                                         :QAUANTITY qty 
-                                         :SHIPPING_ADDRESS shipping-address 
-                                         :BUYER_ID created-by 
-                                         :TOTAL (Float/parseFloat (total-cost product-id))
+        (sdm-orders/make-orders conn/db {:ID @txid 
+                                         :PRODUCT_ID product-id
+                                         :QAUANTITY (Float/parseFloat qty) 
+                                         :SHIPPING_ADDRESS shipping-address
+                                         :BUYER_ID (get (auth/token? token) :_id) 
+                                         :TOTAL (total-cost product-id)
                                          :STATUS_ID (status-id "Place Order")
-                                         :CREATED_BY created-by})
+                                         :CREATED_BY (get (auth/token? token) :_id)})
         ;[todo]
         ; Payment deduct from wallet.
         ; Buyer send payment to Escrow account.
@@ -52,7 +52,7 @@
     [token order-id]
     (if (= (auth/authorized? token) true)
         ; Only seller can update into seccess payment
-        (if (= (get (sdm-products/get-products-by-id conn/db {:ID (get (sdm-orders/get-orders-by-id conn/db {:ID order-id}) :product_id)}) :created_by)
+        (if (not= (get (sdm-products/get-products-by-id conn/db {:ID (get (sdm-orders/get-orders-by-id conn/db {:ID order-id}) :product_id)}) :created_by)
                (get (sdm-orders/get-orders-by-id conn/db {:ID order-id}) :created_by))
             ; True lets product owner change order status
             (try
@@ -71,7 +71,7 @@
     [token order-id]
     (if (= (auth/authorized? token) true)
         ; Only seller can update into seccess payment
-        (if (= (get (sdm-products/get-products-by-id conn/db {:ID (get (sdm-orders/get-orders-by-id conn/db {:ID order-id}) :product_id)}) :created_by)
+        (if (not= (get (sdm-products/get-products-by-id conn/db {:ID (get (sdm-orders/get-orders-by-id conn/db {:ID order-id}) :product_id)}) :created_by)
                (get (sdm-orders/get-orders-by-id conn/db {:ID order-id}) :created_by))
             ; True lets product owner change order status
             (try
@@ -101,7 +101,7 @@
                 (sdm-products/set-products-to-sold conn/db {:ID (get (sdm-orders/get-orders-by-id conn/db {:ID order-id}) :product_id)})
                 ; [Todo]
                 ; Escrow account final sign from buyer or monderator
-                (ok {:message "Order successfully completed"})
+                (ok {:message "Confirm Order Received"})
             (catch Exception ex
                 (writelog/op-log! (str "ERROR : FN update-order-success-pay " (.getMessage ex)))
                 {:error {:message "Internal server error"}}))

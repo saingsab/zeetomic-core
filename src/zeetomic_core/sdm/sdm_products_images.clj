@@ -17,7 +17,7 @@
                                                               :URL url
                                                               :PRODUCT_ID product-id 
                                                               :CREATED_BY created-by})
-        ; will treat is silent save product image url
+        (ok {:message "Image uploaded successfully"})
     (catch Exception ex
         (writelog/op-log! (str "ERROR : FN add-sdm-products-images " (.getMessage ex)))
         {:error {:message "Internal server error"}})))
@@ -31,6 +31,6 @@
           (ok (sdm-products-images/get-sdm-products-images-by-product-id conn/db {:PRODUCT_ID product-id}))
         (catch Exception ex
           (writelog/op-log! (str "ERROR : FN get-users-by-owner " (.getMessage ex)))
-          {:error {:message "Internal server error"}})))
-  (unauthorized {:error {:message "Unauthorized operation not permitted"}}))
+          {:error {:message "Internal server error"}}))
+  (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
   

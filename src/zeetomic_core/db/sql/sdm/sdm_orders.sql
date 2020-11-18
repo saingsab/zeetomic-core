@@ -18,16 +18,14 @@ CREATE TABLE IF NOT EXISTS SDM_ORDERS(
 DROP TABLE IF EXISTS SDM_ORDERS;
 
 -- :name make-orders :! :n
--- :doc orders even
-INSERT INTO SDM_ORDERS(
-    ID,
-    PRODUCT_ID,
-    QAUANTITY,
-    SHIPPING_ADDRESS,
-    BUYER_ID,
-    TOTAL,
-    STATUS_ID,
-    CREATED_BY
+INSERT INTO SDM_ORDERS( ID,
+                        PRODUCT_ID,
+                        QAUANTITY,
+                        SHIPPING_ADDRESS,
+                        BUYER_ID,
+                        TOTAL,
+                        STATUS_ID,
+                        CREATED_BY
 )
 VALUES (:ID,
         :PRODUCT_ID,

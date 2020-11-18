@@ -336,7 +336,7 @@
        :body [sdm-make-order Sdm-make-order]
        :header-params [authorization :- s/Str]
        :summary "Making order product"
-       (sdm-orders/make-orders authorization
+       (sdm-orders/make-order authorization
                                   (get sdm-make-order :product-id) 
                                   (get sdm-make-order :qty)
                                   (get sdm-make-order :shipping-address)))
@@ -359,7 +359,7 @@
       :body [sdm-order-status Sdm-order-status]
       :header-params [authorization :- s/Str]
       :summary "Mark completed on order"
-      (sdm-orders/update-order-shipment authorization
+      (sdm-orders/update-order-completed authorization
                                 (get sdm-order-status :order-id)))
 
     (GET "/order-status" []
