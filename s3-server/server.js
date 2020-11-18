@@ -26,14 +26,14 @@ App.use(
   _.post("/upload", async (ctx) => {
     const file = ctx.request.files.file;
     const { key } = await uploadFile({
-      bucket: "zeepub",
+      bucket: "selendra",
       acl: "public-read",
       fileName: uuid().toString(),
       filePath: file.path,
       fileType: file.type,
     });
     ctx.body = {
-      uri: `https://zeepub.s3-ap-southeast-1.amazonaws.com/${key}`,
+      uri: `https://selendra.s3-ap-southeast-1.amazonaws.com/${key}`
     };
   })
 );
