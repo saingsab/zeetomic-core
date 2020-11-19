@@ -32,7 +32,7 @@
                                          :QAUANTITY (Float/parseFloat qty) 
                                          :SHIPPING_ADDRESS shipping-address
                                          :BUYER_ID (get (auth/token? token) :_id) 
-                                         :TOTAL (total-cost product-id)
+                                         :TOTAL (* (Float/parseFloat qty) (total-cost product-id)) 
                                          :STATUS_ID (status-id "Place Order")
                                          :CREATED_BY (get (auth/token? token) :_id)})
         ;[todo]
