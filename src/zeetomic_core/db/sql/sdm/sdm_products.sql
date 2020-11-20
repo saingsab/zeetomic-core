@@ -48,7 +48,7 @@ VALUES (:ID,
 SELECT * FROM SDM_PRODUCTS
 ORDER BY CREATED_AT DESC;
 
--- :name get-products-by-owner :? :1
+-- :name get-products-by-owner :? :*
 SELECT * FROM SDM_PRODUCTS 
 WHERE CREATED_BY = :CREATED_BY
 ORDER BY CREATED_AT DESC;
