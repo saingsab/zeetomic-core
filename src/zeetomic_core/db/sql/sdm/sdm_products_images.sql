@@ -17,6 +17,6 @@ DROP TABLE IF EXISTS SDM_PRODUCTS_IMAGES;
 INSERT INTO SDM_PRODUCTS_IMAGES (ID, URL, PRODUCT_ID, CREATED_BY)
 VALUES (:ID, :URL, :PRODUCT_ID, :CREATED_BY);
 
--- :name get-sdm-products-images-by-product-id :? :1
+-- :name get-sdm-products-images-by-product-id :? :*
 SELECT * FROM SDM_PRODUCTS_IMAGES
 WHERE PRODUCT_ID = :PRODUCT_ID;
