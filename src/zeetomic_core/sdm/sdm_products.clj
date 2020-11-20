@@ -24,7 +24,7 @@
                                             :CATEGORY_ID category-id
                                             :PAYMENT_ID payment-id
                                             :CREATED_BY created-by})
-        (ok {:message "The listing has been created"})
+        (ok {:id @txid :message "The listing has been created"})
     (catch Exception ex
         (writelog/op-log! (str "ERROR : FN add-products " (.getMessage ex)))
         {:error {:message "Internal server error"}})))
