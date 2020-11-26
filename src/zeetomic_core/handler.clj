@@ -224,6 +224,9 @@
   {:url s/Str
   :product-id s/Str})
 
+(s/defschema Sdm-product-id
+  {:id s/Str})
+
 (def app
   (api
    {:swagger
@@ -313,6 +316,14 @@
        :header-params [authorization :- s/Str]
        :summary "Products listing by owner"
        (sdm-products/get-products-by-owner authorization))
+     
+     (POST "/get-product-by-id" []
+       :body [sdm-product-id Sdm-product-id]
+       :header-params [authorization :- s/Str]
+       :summary "Get products information by id"
+       (sdm-products/get-products-by-id authorization
+                                        (get sdm-product-id :id)))
+
      (POST "/add-product" []
        :body [sdm-add-product Sdm-add-product]
        :header-params [authorization :- s/Str]

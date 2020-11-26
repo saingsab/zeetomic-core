@@ -85,18 +85,18 @@ services:
     command: >
       sh -c "npm install -g pm2 && npm install && pm2-runtime server.js --watch"
 
-  apiserver:
-    image: clojure
-    container_name: "zeetomic-api-testnet"
-    restart: always
-    depends_on:
-      - indracore-rpc-client
-    ports:
-      - 3001:3000
-    volumes:
-      - ./:/usr/src/myapp
-    networks:
-      - web
-      - internal
-    working_dir: /usr/src/myapp
-    command: sh -c "lein do clean, ring uberjar && java -jar target/server.jar"
+  # apiserver:
+  #   image: clojure
+  #   container_name: "zeetomic-api-testnet"
+  #   restart: always
+  #   depends_on:
+  #     - indracore-rpc-client
+  #   ports:
+  #     - 3001:3000
+  #   volumes:
+  #     - ./:/usr/src/myapp
+  #   networks:
+  #     - web
+  #     - internal
+  #   working_dir: /usr/src/myapp
+  #   command: sh -c "lein do clean, ring uberjar && java -jar target/server.jar"

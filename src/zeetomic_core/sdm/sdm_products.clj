@@ -41,6 +41,16 @@
           {:error {:message "Internal server error"}})))
   (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
 
+(defn get-products-by-id 
+    [token products-id]
+    (if (= (auth/authorized? token) true)
+        (try
+          (ok (sdm-products/get-products-by-id conn/db {:ID products-id}))
+        (catch Exception ex
+          (writelog/op-log! (str "ERROR : FN get-products-by-id  " (.getMessage ex)))
+          {:error {:message "Internal server error"}}))
+  (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
+
 (defn get-all-products 
     [token]
     (if (= (auth/authorized? token) true)

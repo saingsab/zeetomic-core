@@ -37,13 +37,52 @@ VALUES (:ID,
         :CREATED_BY
 );
 
--- :name get-orders-by-seller :? :1
-SELECT * FROM SDM_ORDERS 
-WHERE CREATED_BY = :CREATED_BY;
+-- :name get-orders-by-seller :? :*
+SELECT o.ID, 
+       p.NAME,
+       p.PRICE,
+       o.QAUANTITY,
+       s.SHIPPING_SERVICE, 
+       o.SHIPPING_ADDRESS, 
+       u.PHONENUMBER AS BUYER_PHONENUMBER,
+       (u.FIRST_NAME, u.LAST_NAME) AS BUYER, 
+       o.TOTAL,
+       p.THUMBNAIL,
+       o.PRODUCT_ID
 
--- :name get-orders-by-buyer :? :1
-SELECT * FROM SDM_ORDERS 
-WHERE CREATED_BY = :CREATED_BY;
+FROM SDM_PRODUCTS as p
+INNER JOIN  SDM_ORDERS as o
+ON o.PRODUCT_ID=p.ID
+INNER JOIN SDM_SHIPPING_SERVICES AS s
+ON p.SHIPPING = s.ID
+INNER JOIN USERS as u
+ON u.ID = o.CREATED_BY
+WHERE o.CREATED_BY = :CREATED_BY
+ORDER BY o.CREATED_AT DESC;
+
+-- :name get-orders-by-buyer :? :*
+SELECT o.ID, 
+       p.NAME,
+       p.PRICE,
+       o.QAUANTITY,
+       s.SHIPPING_SERVICE, 
+       o.SHIPPING_ADDRESS, 
+       o.BUYER_ID, 
+       o.TOTAL,
+       u.PHONENUMBER AS SELLER_PHONENUMBER,
+       (u.FIRST_NAME, u.LAST_NAME) AS SELLER,
+       p.THUMBNAIL,
+       o.PRODUCT_ID
+
+FROM SDM_PRODUCTS as p
+INNER JOIN  SDM_ORDERS as o
+ON o.PRODUCT_ID=p.ID
+INNER JOIN SDM_SHIPPING_SERVICES AS s
+ON p.SHIPPING = s.ID
+INNER JOIN USERS as u
+ON u.ID = p.CREATED_BY
+WHERE o.CREATED_BY = :CREATED_BY
+ORDER BY o.CREATED_AT DESC;
 
 -- :name get-orders-by-id :? :1
 SELECT * FROM SDM_ORDERS 
