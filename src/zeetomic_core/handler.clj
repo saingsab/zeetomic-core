@@ -338,10 +338,20 @@
                                   (get sdm-add-product :category-id)
                                   (get sdm-add-product :payment-id)))
                        
-     (GET "/list-order" []
+    ;  (GET "/list-order" []
+    ;    :header-params [authorization :- s/Str]
+    ;    :summary "List product order"
+    ;    (sdm-orders/list-order authorization))
+
+     (GET "/list-order-from-seller" []
        :header-params [authorization :- s/Str]
-       :summary "List product order"
-       (sdm-orders/list-order authorization))
+       :summary "List product order from seller"
+       (sdm-orders/list-order-from-seller  authorization))
+
+    (GET "/list-order-from-buyer" []
+       :header-params [authorization :- s/Str]
+       :summary "List product order from seller"
+       (sdm-orders/list-order-from-buyer  authorization))
       
     (POST "/make-order" []
        :body [sdm-make-order Sdm-make-order]

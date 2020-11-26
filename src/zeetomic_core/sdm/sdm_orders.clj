@@ -120,6 +120,27 @@
           {:error {:message "Internal server error"}})))
   (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
 
+(defn list-order-from-buyer 
+    [token] 
+    (if (= (auth/authorized? token) true)
+        (let [created-by (get (auth/token? token) :_id)]
+            (try 
+                (ok (sdm-orders/get-orders-by-buyer conn/db {:CREATED_BY created-by}))
+            (catch Exception ex
+                (writelog/op-log! (str "ERROR : FN get-users-by-owner " (.getMessage ex)))
+                {:error {:message "Internal server error"}})))
+        (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
+
+(defn list-order-from-seller 
+    [token] 
+    (if (= (auth/authorized? token) true)
+        (let [created-by (get (auth/token? token) :_id)]
+            (try 
+                (ok (sdm-orders/get-orders-by-seller conn/db {:CREATED_BY created-by}))
+            (catch Exception ex
+                (writelog/op-log! (str "ERROR : FN get-users-by-owner " (.getMessage ex)))
+                {:error {:message "Internal server error"}})))
+        (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
 ; [todo]
 ; list by difference status
 
