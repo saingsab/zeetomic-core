@@ -1,17 +1,18 @@
 -- :name create-sdm-orders-table :! 
 -- :doc created at 20201116 by saing t.me/saingsab
+-- :doc Modified at 20201202 by saing t.me/saingsab 'Adding Order status'
 CREATE TABLE IF NOT EXISTS SDM_ORDERS(
     ID	                VARCHAR (36) PRIMARY KEY,
-    PRODUCT_ID	        VARCHAR (36),
-    QAUANTITY	        NUMERIC,
-    SHIPPING_ADDRESS    TEXT,
-    BUYER_ID	        VARCHAR (36),
-    TOTAL	            NUMERIC,
-    STATUS_ID	        VARCHAR (36),
-    CREATED_AT	        TIMESTAMP NOT NULL default current_timestamp,
-    CREATED_BY	        VARCHAR (36),
-    UPDATED_BY	        VARCHAR (36),
-    UPDATED_AT	        TIMESTAMP
+    PRODUCT_ID	  VARCHAR (36),
+    QAUANTITY	         NUMERIC,
+    SHIPPING_ADDRESS   TEXT,
+    BUYER_ID	         VARCHAR (36),
+    TOTAL	         NUMERIC,
+    STATUS_ID	         VARCHAR (36),
+    CREATED_AT	  TIMESTAMP NOT NULL default current_timestamp,
+    CREATED_BY	  VARCHAR (36),
+    UPDATED_BY	  VARCHAR (36),
+    UPDATED_AT	  TIMESTAMP
 );
 
 -- :name drop-sdm-orders-table :!
