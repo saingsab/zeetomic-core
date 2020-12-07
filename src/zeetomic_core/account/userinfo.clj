@@ -43,7 +43,7 @@
     (unauthorized {:error {:message "Unauthorized operation not permitted"}})))
 
 (defn setup-profile!
-  [token first-name mid-name last-name gender]
+  [token first-name mid-name last-name gender image-uri address]
   (if (= (auth/authorized? token) true)
   ; letdo
     (try
@@ -52,6 +52,8 @@
                                          :MID_NAME mid-name
                                          :LAST_NAME last-name
                                          :GENDER gender
+                                         :PROFILE_IMG image-uri
+                                         :ADDRESS address
                                          :STATUS_ID Status})
       (ok {:message "Your profile have been saved successfully"})
       (catch Exception ex
