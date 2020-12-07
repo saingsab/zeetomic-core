@@ -45,7 +45,29 @@ VALUES (:ID,
 );
 
 -- :name get-all-products :? :*
-SELECT * FROM SDM_PRODUCTS
+SELECT  p.ID,
+        p.NAME,
+        p.PRICE,
+        s.SHIPPING_SERVICE,
+        s.PRICE AS SHIPPING_FEE,
+        p.WEIGHT,
+        p.DESCRIPTION,
+        p.THUMBNAIL,
+        c.CATEGORY_NAME,
+        p.PAYMENT_ID,
+        p.IS_SOLD,
+        p.CREATED_AT,
+        (u.FIRST_NAME, u.LAST_NAME) AS SELLER,
+        u.PHONENUMBER,
+        u.ADDRESS
+
+FROM SDM_PRODUCTS AS p
+INNER JOIN USERS AS u
+ON u.ID = p.CREATED_BY
+INNER JOIN SDM_PRODUCT_CATEGORY AS c
+ON p.CATEGORY_ID = c.ID
+INNER JOIN SDM_SHIPPING_SERVICES AS s
+ON p.SHIPPING = s.ID
 ORDER BY CREATED_AT DESC;
 
 -- :name get-all-products-gallery :? :*
