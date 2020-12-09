@@ -175,7 +175,7 @@
 ; APIKEY
 (s/defschema Apikeys
   {:apikey s/Str
-  :apisec s/Str})
+   :apisec s/Str})
 
   (s/defschema Paybyapi
     {:id s/Str

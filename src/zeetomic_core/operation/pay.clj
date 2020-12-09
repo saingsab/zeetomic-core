@@ -148,18 +148,45 @@
   [id apikey apisec destination asset-code amount memo]
   (if (and (= apikey (get (apiacc/get-api-by-id conn/db {:APIKEY apikey}) :apikey)) (= apisec (get (apiacc/get-api-by-id conn/db {:APIKEY apikey}) :apisec))) 
     (try 
-      (ok (json/read-str 
-            (get 
-              (client/post (str (get env :sendpayment))
-              {:form-params {:senderKey (ed/decrypt (get (users/get-seed-by-id conn/db {:ID id}) :seed))
-                            :assetCode asset-code
-                            :destination destination
-                            :amount amount
-                            :memo memo}
-              :content-type :json})
-            :body)
-          :key-fn keyword))
+      (let [hash (json/read-str 
+                          (get (client/post (str (get env :selendpoint) "/transfer")
+                                  {:form-params {:sender (ed/decrypt (get (users/get-seed-by-id conn/db {:ID (get (auth/token? token) :_id)}) :seed))
+                                                  :assetCode asset-code
+                                                  :dest destination
+                                                  :amount amount
+                                                  :memo memo}
+                                    :content-type :json}) :body) :key-fn keyword)]
+            ; (println (get hash :message))
+            ; save trx to local db
+            (trxarchive/add-trxarchive conn/db {:ID @txid 
+                                                :BLOCK nil 
+                                                :HASH (get hash :message) 
+                                                :SENDER (get (users/get-users-by-id conn/db {:ID (get (auth/token? token) :_id)}) :wallet)
+                                                :DESTINATION destination 
+                                                :AMOUNT (Float/parseFloat amount)
+                                                :FEE 0.0001 
+                                                :MEMO memo
+                                                :CREATED_BY (get (auth/token? token) :_id)}))
+        (ok {:message "Your transaction is on the way!"})
         ; Fee to be implemented
        (catch Exception ex
         (writelog/tx-log! (str "FAILDED : pay-by-api " (.getMessage ex)))))
     (ok {:message {:error "Invalid API KEYS"}})))
+
+(defn hostory-by-api 
+  [apikey apisec wallet]
+  (if (and (= apikey (get (apiacc/get-api-by-id conn/db {:APIKEY apikey}) :apikey)) (= apisec (get (apiacc/get-api-by-id conn/db {:APIKEY apikey}) :apisec))) 
+    (try 
+      (ok (get-trx-hostory wallet))
+    (catch Exception ex
+      (writelog/tx-log! (str "FAILDED : fetch tx history " (.getMessage ex)))))
+  (ok {:message {:error "Invalid API KEYS"}})))
+
+(defn hostory-by-api 
+  [apikey apisec wallet]
+  (if (and (= apikey (get (apiacc/get-api-by-id conn/db {:APIKEY apikey}) :apikey)) (= apisec (get (apiacc/get-api-by-id conn/db {:APIKEY apikey}) :apisec))) 
+    (try 
+      (ok (get-trx-hostory wallet))
+    (catch Exception ex
+      (writelog/tx-log! (str "FAILDED : fetch tx history " (.getMessage ex)))))
+  (ok {:message {:error "Invalid API KEYS"}})))
