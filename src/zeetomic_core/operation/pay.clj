@@ -45,8 +45,9 @@
                {:form-params {:seed seed}
                 :content-type :json}))
 
-(defn is-wallet-nil? [id]
-  (nil? (get (users/get-users-by-id conn/db {:ID id}) :wallet)))
+(defn is-wallet-nil? 
+  [id]
+  (nil? (get (users/get-all-users-by-id conn/db {:ID id}) :wallet)))
 
 (defn get-portforlio
   [token]
@@ -59,8 +60,20 @@
         :content-type :json}) :body) :key-fn keyword))
       (catch Exception ex
         (writelog/op-log! (str "ERROR : " (.getMessage ex)))
-        "Internal server error"))
-  ))
+        "Internal server error"))))
+
+(defn get-portforlio-api
+  [id]
+  (if (= true (is-wallet-nil? id))
+    (ok {:error {:message "Look like you don't have a wallet yet!"}})
+    (try
+      (ok (json/read-str (get 
+                        (client/post (str (get env :selendpoint) "/balances")
+                                      {:form-params {:add (get (users/get-all-users-by-id conn/db {:ID id}) :wallet)}
+        :content-type :json}) :body) :key-fn keyword))
+      (catch Exception ex
+        (writelog/op-log! (str "ERROR : " (.getMessage ex)))
+        "Internal server error"))))
 
 (defn get-trx-hostory
   [wallet]
@@ -169,24 +182,26 @@
                                                 :FEE 0.0001 
                                                 :MEMO memo
                                                 :CREATED_BY apikey}))
+        (ok {:message "Your transaction is on the way!"})
         (catch Exception ex
           (writelog/tx-log! (str "FAILDED : FN pay-by-api " (.getMessage ex)))))
     (ok {:message {:error "Invalid API KEYS"}})))
 
-(defn hostory-by-api 
-  [apikey apisec wallet]
+(defn history-by-api 
+  [id apikey apisec]
   (if (and (= apikey (get (apiacc/get-api-by-id conn/db {:APIKEY apikey}) :apikey)) (= apisec (get (apiacc/get-api-by-id conn/db {:APIKEY apikey}) :apisec))) 
     (try 
-      (ok (get-trx-hostory wallet))
+      (let [wallet (get (users/get-all-users-by-id conn/db {:ID id}) :wallet)]
+        (ok (get-trx-hostory wallet)))
     (catch Exception ex
       (writelog/tx-log! (str "FAILDED : fetch tx history " (.getMessage ex)))))
   (ok {:message {:error "Invalid API KEYS"}})))
 
-(defn hostory-by-api 
-  [apikey apisec wallet]
+(defn portforlio-by-api 
+  [id apikey apisec]
   (if (and (= apikey (get (apiacc/get-api-by-id conn/db {:APIKEY apikey}) :apikey)) (= apisec (get (apiacc/get-api-by-id conn/db {:APIKEY apikey}) :apisec))) 
     (try 
-      (ok (get-trx-hostory wallet))
+        (ok (get-portforlio-api id))
     (catch Exception ex
       (writelog/tx-log! (str "FAILDED : fetch tx history " (.getMessage ex)))))
   (ok {:message {:error "Invalid API KEYS"}})))

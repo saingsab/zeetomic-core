@@ -4,13 +4,14 @@ const cors = require("@koa/cors");
 const bodyParser = require("koa-bodyparser");
 const dotenv = require("dotenv");
 
+dotenv.config();
+
 // Router
 const transfer = require("./routes/transfer");
 const getwallet = require("./routes/getwallet");
 const balances = require("./routes/balances");
 
 // Koa Web Configuration
-dotenv.config();
 const App = new Koa();
 // const router = new Route();
 App.use(cors({ origin: "*" }));
@@ -23,8 +24,8 @@ App.use(_.post("/balances", balances.balances));
 
 // Server 
 try {
-    App.listen(process.env.PORT);
-    console.log(`Indracore-rpc-client Started at http://localhost:${process.env.PORT}`);
+    App.listen(process.env.SELPORT);
+    console.log(`Indracore-rpc-client Started at http://localhost:${process.env.SELPORT}`);
 }
 catch (e) {
     console.log(e);

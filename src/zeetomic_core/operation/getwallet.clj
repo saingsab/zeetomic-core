@@ -66,7 +66,7 @@
             (reset! xwallet (wallets))
             (reset! user-id (uuid))
             (users/setup-wallet-by-api conn/db {:ID @user-id :WALLET (get @xwallet :wallet) :SEED (ed/encrypt (get @xwallet :seed)) :CREATED_BY apikey})
-            (addasset/add-assets! (get @xwallet :seed) "SEL" (get env :assetIssuer))
+            ; (addasset/add-assets! (get @xwallet :seed) "SEL" (get env :assetIssuer))
             ; return wallet 
             (ok {:message {:id @user-id :wallet (get @xwallet :wallet)}})
             (catch Exception ex

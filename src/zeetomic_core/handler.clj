@@ -177,7 +177,7 @@
   {:apikey s/Str
    :apisec s/Str})
 
-  (s/defschema Paybyapi
+(s/defschema Paybyapi
     {:id s/Str
      :apikey s/Str 
      :apisec s/Str 
@@ -185,6 +185,11 @@
      :asset_code s/Str 
      :amount s/Str 
      :memo s/Str})
+
+(s/defschema Apibalance
+  {:id s/Str
+   :apikey s/Str
+   :apisec s/Str}) 
 
 
 ; Waves Schema
@@ -297,6 +302,21 @@
                    (get paybyapi :asset_code) 
                    (get paybyapi :amount) 
                    (get paybyapi :memo)))
+
+    (POST "/portforlio-by-api" []
+      :body [apibalance Apibalance]
+      :summary "Display the portforlio from api client"
+      (pay/portforlio-by-api  (get apibalance :id)
+                              (get apibalance :apikey)
+                              (get apibalance :apisec)))
+            
+    (POST "/history-by-api" []
+      :body [apibalance Apibalance]
+      :summary "Display the hostory from api client"
+      (pay/history-by-api (get apibalance :id)
+                          (get apibalance :apikey)
+                          (get apibalance :apisec)))
+    ; 
   ; next endpoine for external APIS
   )
   ; Selendra Market Endpoint
