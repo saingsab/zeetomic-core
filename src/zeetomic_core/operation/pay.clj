@@ -163,12 +163,12 @@
             (trxarchive/add-trxarchive conn/db {:ID @txid 
                                                 :BLOCK nil 
                                                 :HASH (get hash :message) 
-                                                :SENDER (get (users/get-users-by-id conn/db {:ID (get (auth/token? token) :_id)}) :wallet)
+                                                :SENDER (get (users/get-users-by-id conn/db {:ID id}) :wallet)
                                                 :DESTINATION destination 
                                                 :AMOUNT (Float/parseFloat amount)
                                                 :FEE 0.0001 
                                                 :MEMO memo
-                                                :CREATED_BY (get (auth/token? token) :_id)}))
+                                                :CREATED_BY apikey}))
         (catch Exception ex
           (writelog/tx-log! (str "FAILDED : FN pay-by-api " (.getMessage ex)))))
     (ok {:message {:error "Invalid API KEYS"}})))
