@@ -176,7 +176,7 @@
             (trxarchive/add-trxarchive conn/db {:ID @txid 
                                                 :BLOCK nil 
                                                 :HASH (get hash :message) 
-                                                :SENDER (get (users/get-users-by-id conn/db {:ID id}) :wallet)
+                                                :SENDER (get (users/get-all-users-by-id conn/db {:ID id}) :wallet)
                                                 :DESTINATION destination 
                                                 :AMOUNT (Float/parseFloat amount)
                                                 :FEE 0.0001 
