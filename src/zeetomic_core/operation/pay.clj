@@ -147,10 +147,12 @@
 (defn pay-by-api
   [id apikey apisec destination asset-code amount memo]
   (if (and (= apikey (get (apiacc/get-api-by-id conn/db {:APIKEY apikey}) :apikey)) (= apisec (get (apiacc/get-api-by-id conn/db {:APIKEY apikey}) :apisec))) 
-    (try 
-      (let [hash (json/read-str 
+      (try 
+        (reset! txid (java.util.UUID/randomUUID))
+        (println "... Init payment tx ...")
+        (let [hash (json/read-str 
                           (get (client/post (str (get env :selendpoint) "/transfer")
-                                  {:form-params {:sender (ed/decrypt (get (users/get-seed-by-id conn/db {:ID (get (auth/token? token) :_id)}) :seed))
+                                  {:form-params {:sender (ed/decrypt (get (users/get-seed-by-id conn/db {:ID id}) :seed))
                                                   :assetCode asset-code
                                                   :dest destination
                                                   :amount amount
@@ -167,10 +169,8 @@
                                                 :FEE 0.0001 
                                                 :MEMO memo
                                                 :CREATED_BY (get (auth/token? token) :_id)}))
-        (ok {:message "Your transaction is on the way!"})
-        ; Fee to be implemented
-       (catch Exception ex
-        (writelog/tx-log! (str "FAILDED : pay-by-api " (.getMessage ex)))))
+        (catch Exception ex
+          (writelog/tx-log! (str "FAILDED : FN pay-by-api " (.getMessage ex)))))
     (ok {:message {:error "Invalid API KEYS"}})))
 
 (defn hostory-by-api 
