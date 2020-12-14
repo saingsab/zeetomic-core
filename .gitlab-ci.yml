@@ -9,8 +9,8 @@ deploy_production:
     - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
     - echo "$PRIVATEKEY1" > ~/.ssh/id_ed25519
     - chmod 600 ~/.ssh/id_ed25519
-    - echo "$AWSKEY" > ~/.ssh/sel-key.pem
-    - chmod 400 ~/.ssh/sel-key.pem
+    - echo "$AWSKEY" > sel-key.pem
+    - chmod 400 sel-key.pem
     #adding key.pem to host
     #PRD
     #- ssh -i "~/.ssh/zeetomic-key.pem" ec2-user@ec2-54-255-208-86.ap-southeast-1.compute.amazonaws.com "cd /home/ec2-user/zeetomic-core && docker-compose -f stack.yml down && git add . && git pull && docker-compose -f stack.yml up -d && ./notify.sh && exit"
