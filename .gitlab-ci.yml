@@ -14,11 +14,7 @@ deploy_production:
     #adding key.pem to host
     #PRD
     #- ssh -i "~/.ssh/zeetomic-key.pem" ec2-user@ec2-54-255-208-86.ap-southeast-1.compute.amazonaws.com "cd /home/ec2-user/zeetomic-core && docker-compose -f stack.yml down && git add . && git pull && docker-compose -f stack.yml up -d && ./notify.sh && exit"
-    #TEST
-    - cat ~/.ssh/sel-api-ec2.pem
-    - pwd 
-    - ls
-    - ssh -i "~/.ssh/sel-api-ec2.pem" ubuntu@ec2-13-250-7-178.ap-southeast-1.compute.amazonaws.com "cd /home/ubuntu/zeetomic-core && docker-compose -f stack.yml down && git add . && git pull && docker-compose -f stack.yml up -d && ./notify.sh && exit"
+    - ssh -i "~/.ssh/sel-api-ec2.pem" ec2-user@ec2-54-179-38-52.ap-southeast-1.compute.amazonaws.com "cd /home/ec2-user/zeetomic-core && docker-compose -f stack.yml down && git add . && git pull && docker-compose -f stack.yml up -d && ./notify.sh && exit"
   
   only:
     - master
