@@ -29,7 +29,7 @@ services:
       - db-testnet
 
   node-testnet:
-    image: node:15-alpine
+    image: keymetrics/pm2:latest-alpine
     container_name: "stellar-node-testnet"
     restart: always
     ports:
@@ -40,10 +40,10 @@ services:
       - internal
     working_dir: /home/node/app
     command: >
-      sh -c "npm i -S pm2 && npm install && pm2-runtime src/app.js --watch"
+      sh -c "npm install && pm2-runtime start ecosystem.config.js"
 
   indracore-rpc-client:
-    image: node:15-alpine
+    image: keymetrics/pm2:latest-alpine
     container_name: "indracore-rpc-client"
     restart: always
     ports:
@@ -54,7 +54,7 @@ services:
       - internal
     working_dir: /home/node/app
     command: >
-      sh -c "npm i -S pm2 && npm install && pm2-runtime src/app.js --watch"
+      sh -c "npm i -S pm2 && npm install && pm2-runtime start ecosystem.config.js"
 
   s3-server:
     image: node:12-alpine
