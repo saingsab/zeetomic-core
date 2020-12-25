@@ -201,7 +201,7 @@
   [id apikey apisec]
   (if (and (= apikey (get (apiacc/get-api-by-id conn/db {:APIKEY apikey}) :apikey)) (= apisec (get (apiacc/get-api-by-id conn/db {:APIKEY apikey}) :apisec))) 
     (try 
-        (ok (get-portforlio-api id))
+        (ok (get (get-portforlio-api id) :body))
     (catch Exception ex
       (writelog/tx-log! (str "FAILDED : fetch tx history " (.getMessage ex)))))
   (ok {:message {:error "Invalid API KEYS"}})))

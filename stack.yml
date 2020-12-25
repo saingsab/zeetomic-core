@@ -54,7 +54,7 @@ services:
       - internal
     working_dir: /home/node/app
     command: >
-      sh -c "npm i -S pm2 && npm install && pm2-runtime start ecosystem.config.js"
+      sh -c "npm install && pm2-runtime start ecosystem.config.js"
 
   s3-server:
     image: node:12-alpine
