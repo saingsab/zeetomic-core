@@ -42,19 +42,19 @@ services:
     command: >
       sh -c "npm install && pm2-runtime start ecosystem.config.js"
 
-  indracore-rpc-client:
-    image: keymetrics/pm2:latest-alpine
-    container_name: "indracore-rpc-client"
-    restart: always
-    ports:
-      - 9002:9002
-    volumes:
-      - ./indracore-rpc-client:/home/node/app
-    networks:
-      - internal
-    working_dir: /home/node/app
-    command: >
-      sh -c "npm install && pm2-runtime start ecosystem.config.js"
+  # indracore-rpc-client:
+  #   image: keymetrics/pm2:latest-alpine
+  #   container_name: "indracore-rpc-client"
+  #   restart: always
+  #   ports:
+  #     - 9002:9002
+  #   volumes:
+  #     - ./indracore-rpc-client:/home/node/app
+  #   networks:
+  #     - internal
+  #   working_dir: /home/node/app
+  #   command: >
+  #     sh -c "npm install && pm2-runtime start ecosystem.config.js"
 
   s3-server:
     image: node:12-alpine

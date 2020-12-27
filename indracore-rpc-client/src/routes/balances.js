@@ -5,7 +5,8 @@ exports.balances = async ctx => {
     const ADDR = ctx.request.body.add;
 
     // Initialise the provider to connect to the local node
-    const provider = new WsProvider('wss://rpc-testnet.selendra.org');
+    //const provider = new WsProvider('wss://rpc-testnet.selendra.org');
+    const provider = new WsProvider('ws://127.0.0.1:9944');
 
     // Create the API and wait until ready
     const api = await ApiPromise.create({ provider });
