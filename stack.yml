@@ -29,7 +29,7 @@ services:
       - db-testnet
 
   node-testnet:
-    image: keymetrics/pm2:latest-alpine
+    image: node:12-alpine
     container_name: "stellar-node-testnet"
     restart: always
     ports:
@@ -40,7 +40,7 @@ services:
       - internal
     working_dir: /home/node/app
     command: >
-      sh -c "npm install && pm2-runtime start ecosystem.config.js"
+      sh -c "npm i -g pm2 && npm install && pm2-runtime src/app.js --watch"
 
   # indracore-rpc-client:
   #   image: keymetrics/pm2:latest-alpine
@@ -68,7 +68,22 @@ services:
       - web
     working_dir: /home/node/app
     command: >
-      sh -c "npm i -S pm2 && npm install && pm2-runtime server.js --watch"
+      sh -c "npm i -g pm2 && npm install && pm2-runtime server.js --watch"
+
+  indracore-rpc-client:
+    image: rust:1.46-slim
+    container_name: "indracore-rpc-client"
+    restart: always
+    ports:
+      - 9002:9002
+    volumes:
+      - ./indracore-rust:/usr/src/myapp
+    networks:
+      - web
+      - internal
+    working_dir: /usr/src/myapp
+    command: >
+      sh -c "./script/init.sh && cd http_service && cargo build --release && .././target/release/service"
 
   apiserver:
     image: clojure

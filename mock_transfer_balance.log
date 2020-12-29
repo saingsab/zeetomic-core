@@ -1,0 +1,119 @@
+2020/12/29 17:24:14 {"message":"Your transaction is on the way!"}
+2020/12/29 17:24:19 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15398840979839044 vs 15398840979839044)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:24:23 {"message":"Your transaction is on the way!"}
+2020/12/29 17:24:27 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15398840976152196 vs 15398840976152196)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:28:09 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15398840915193516 vs 15398840915193516)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:28:17 {"message":"Your transaction is on the way!"}
+2020/12/29 17:28:26 {"message":"Your transaction is on the way!"}
+2020/12/29 17:28:34 {"message":"Your transaction is on the way!"}
+2020/12/29 17:28:43 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15398840905965922 vs 15398840905965922)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:28:51 {"message":"Your transaction is on the way!"}
+2020/12/29 17:29:00 {"message":"Your transaction is on the way!"}
+2020/12/29 17:29:08 {"message":"Your transaction is on the way!"}
+2020/12/29 17:29:17 {"message":"Your transaction is on the way!"}
+2020/12/29 17:29:25 {"message":"Your transaction is on the way!"}
+2020/12/29 17:29:33 {"message":"Your transaction is on the way!"}
+2020/12/29 17:29:42 {"message":"Your transaction is on the way!"}
+2020/12/29 17:29:51 {"message":"Your transaction is on the way!"}
+2020/12/29 17:29:59 {"message":"Your transaction is on the way!"}
+2020/12/29 17:30:08 {"message":"Your transaction is on the way!"}
+2020/12/29 17:30:17 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15398840880126564 vs 15398840880126564)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:30:29 {"message":"Your transaction is on the way!"}
+2020/12/29 17:30:38 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15398840874585818 vs 15398840874585818)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:30:46 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15398840872742394 vs 15398840872742394)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:30:54 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15398840869045072 vs 15398840869045072)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:31:02 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15398840869045072 vs 15398840869045072)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:31:11 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15398840867201648 vs 15398840867201648)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:31:19 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15398840863514800 vs 15398840863514800)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:31:27 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15398840861671376 vs 15398840861671376)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:31:35 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15398840861671376 vs 15398840861671376)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:31:44 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15398840857974054 vs 15398840857974054)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:31:53 {"message":"Rpc(Request(Error { code: ServerError(1010), message: \"Invalid Transaction\", data: Some(String(\"Transaction is outdated\")) }))"}
+2020/12/29 17:32:01 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15398840854287206 vs 15398840854287206)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:32:10 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15398840852433308 vs 15398840852433308)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:32:18 {"message":"Your transaction is on the way!"}
+2020/12/29 17:32:27 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15398840846903036 vs 15398840846903036)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:32:35 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15398840843205714 vs 15398840843205714)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:32:44 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15398840843205714 vs 15398840843205714)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:32:53 {"message":"Your transaction is on the way!"}
+2020/12/29 17:33:01 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15398840837664968 vs 15398840837664968)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:33:09 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15398840835821544 vs 15398840835821544)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:33:18 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15398840833978120 vs 15398840833978120)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:33:27 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15398840832134696 vs 15398840832134696)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:33:35 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15398840830280798 vs 15398840830280798)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:33:43 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15398840830280798 vs 15398840830280798)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:33:53 {"message":"Your transaction is on the way!"}
+2020/12/29 17:34:01 {"message":"Your transaction is on the way!"}
+2020/12/29 17:34:09 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15398840826593950 vs 15398840826593950)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:34:18 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15398840824750526 vs 15398840824750526)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:34:27 {"message":"Your transaction is on the way!"}
+2020/12/29 17:34:36 {"message":"Your transaction is on the way!"}
+2020/12/29 17:34:44 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15398840819209780 vs 15398840819209780)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:34:52 {"message":"Your transaction is on the way!"}
+2020/12/29 17:35:01 {"message":"Your transaction is on the way!"}
+2020/12/29 17:35:10 {"message":"Your transaction is on the way!"}
+2020/12/29 17:35:18 {"message":"Your transaction is on the way!"}
+2020/12/29 17:35:27 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15398840806295338 vs 15398840806295338)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:35:36 {"message":"Your transaction is on the way!"}
+2020/12/29 17:35:44 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15503580802598016 vs 15503580802598016)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:35:53 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15503580800754592 vs 15503580800754592)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:36:01 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15503580798911168 vs 15503580798911168)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:36:10 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15503580797057270 vs 15503580797057270)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:36:19 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15503580793370422 vs 15503580793370422)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:36:27 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15503580791526998 vs 15503580791526998)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:36:36 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15503580787829676 vs 15503580787829676)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:36:45 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15503580785986252 vs 15503580785986252)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:36:53 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15503580784142828 vs 15503580784142828)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:37:01 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15503580784142828 vs 15503580784142828)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:37:10 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15503580780445506 vs 15503580780445506)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:37:19 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15503580776758658 vs 15503580776758658)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:37:27 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15503580774915234 vs 15503580774915234)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:37:35 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15503580771217912 vs 15503580771217912)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:37:44 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15503580769374488 vs 15503580769374488)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:37:53 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15503580765677166 vs 15503580765677166)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:38:01 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15503580765677166 vs 15503580765677166)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:38:10 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15503580763833742 vs 15503580763833742)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:38:18 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15503580761990318 vs 15503580761990318)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:38:27 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15503580760146894 vs 15503580760146894)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:38:35 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15503580758303470 vs 15503580758303470)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:38:43 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15503580756449572 vs 15503580756449572)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:38:52 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15503580756449572 vs 15503580756449572)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:39:01 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15503580752762724 vs 15503580752762724)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:39:09 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15503580750919300 vs 15503580750919300)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:39:17 {"message":"Your transaction is on the way!"}
+2020/12/29 17:39:25 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15503580747221978 vs 15503580747221978)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:39:38 {"message":"Your transaction is on the way!"}
+2020/12/29 17:39:46 {"message":"Your transaction is on the way!"}
+2020/12/29 17:39:54 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15608320741691706 vs 15608320741691706)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:40:02 {"message":"Your transaction is on the way!"}
+2020/12/29 17:40:11 {"message":"Your transaction is on the way!"}
+2020/12/29 17:40:19 {"message":"Your transaction is on the way!"}
+2020/12/29 17:40:28 {"message":"Your transaction is on the way!"}
+2020/12/29 17:40:36 {"message":"Your transaction is on the way!"}
+2020/12/29 17:40:45 {"message":"Your transaction is on the way!"}
+2020/12/29 17:40:53 {"message":"Your transaction is on the way!"}
+2020/12/29 17:41:01 {"message":"Your transaction is on the way!"}
+2020/12/29 17:41:09 {"message":"Your transaction is on the way!"}
+2020/12/29 17:41:18 {"message":"Your transaction is on the way!"}
+2020/12/29 17:41:26 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15608320714008924 vs 15608320714008924)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:41:35 {"message":"Your transaction is on the way!"}
+2020/12/29 17:41:43 {"message":"Your transaction is on the way!"}
+2020/12/29 17:41:52 {"message":"Your transaction is on the way!"}
+2020/12/29 17:42:00 {"message":"Your transaction is on the way!"}
+2020/12/29 17:42:08 {"message":"Your transaction is on the way!"}
+2020/12/29 17:42:16 {"message":"Your transaction is on the way!"}
+2020/12/29 17:42:25 {"message":"Your transaction is on the way!"}
+2020/12/29 17:42:33 {"message":"Your transaction is on the way!"}
+2020/12/29 17:42:41 {"message":"Your transaction is on the way!"}
+2020/12/29 17:42:50 {"message":"Your transaction is on the way!"}
+2020/12/29 17:42:58 {"message":"Your transaction is on the way!"}
+2020/12/29 17:43:06 {"message":"Your transaction is on the way!"}
+2020/12/29 17:43:14 {"message":"Your transaction is on the way!"}
+2020/12/29 17:43:23 {"message":"Your transaction is on the way!"}
+2020/12/29 17:43:31 {"message":"Your transaction is on the way!"}
+2020/12/29 17:43:39 {"message":"Your transaction is on the way!"}
+2020/12/29 17:43:47 {"message":"Your transaction is on the way!"}
+2020/12/29 17:43:56 {"message":"Rpc(Request(Error { code: ServerError(1014), message: \"Priority is too low: (15608320677109022 vs 15608320677109022)\", data: Some(String(\"The transaction has too low priority to replace another transaction already in the pool.\")) }))"}
+2020/12/29 17:44:04 {"message":"Your transaction is on the way!"}
+2020/12/29 17:44:13 {"message":"Your transaction is on the way!"}
+2020/12/29 17:44:21 {"error":{"message":"Unauthorized operation not permitted"}}

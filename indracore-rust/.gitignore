@@ -1,0 +1,14 @@
+/target
+**/*.rs.bk
+/api/secret.key
+Cargo.lock
+note.txt
+.env
+*.wasm
+
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+rest_api_mock.sh

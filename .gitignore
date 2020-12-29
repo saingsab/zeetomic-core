@@ -14,3 +14,4 @@ s3-server/node_modules
 stellar-poc/rest.http
 waves-srv/node_modules
 indracore-rpc-client/node_modules
+indracore-rust/http_service/.indrawallet

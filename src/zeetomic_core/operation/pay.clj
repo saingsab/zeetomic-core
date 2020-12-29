@@ -55,8 +55,8 @@
     (ok {:error {:message "Look like you don't have a wallet yet!"}})
     (try
       (ok (json/read-str (get 
-                        (client/post (str (get env :selendpoint) "/balances")
-                                      {:form-params {:add (get (users/get-users-by-id conn/db {:ID (get (auth/token? token) :_id)}) :wallet)}
+                        (client/post (str (get env :selendpoint) "/balance")
+                                      {:form-params {:address (get (users/get-users-by-id conn/db {:ID (get (auth/token? token) :_id)}) :wallet)}
         :content-type :json}) :body) :key-fn keyword))
       (catch Exception ex
         (writelog/op-log! (str "ERROR : " (.getMessage ex)))
@@ -68,8 +68,8 @@
     (ok {:error {:message "Look like you don't have a wallet yet!"}})
     (try
       (ok (json/read-str (get 
-                        (client/post (str (get env :selendpoint) "/balances")
-                                      {:form-params {:add (get (users/get-all-users-by-id conn/db {:ID id}) :wallet)}
+                        (client/post (str (get env :selendpoint) "/balance")
+                                      {:form-params {:address (get (users/get-all-users-by-id conn/db {:ID id}) :wallet)}
         :content-type :json}) :body) :key-fn keyword))
       (catch Exception ex
         (writelog/op-log! (str "ERROR : " (.getMessage ex)))
@@ -95,23 +95,28 @@
                           (get (client/post (str (get env :selendpoint) "/transfer")
                                   {:form-params {:sender (ed/decrypt (get (users/get-seed-by-id conn/db {:ID (get (auth/token? token) :_id)}) :seed))
                                                   :assetCode asset-code
-                                                  :dest destination
-                                                  :amount amount
+                                                  :receiver destination
+                                                  :amount (Float/parseFloat amount)
                                                   :memo memo}
                                     :content-type :json}) :body) :key-fn keyword)]
-            ; (println (get hash :message))
-            ; save trx to local db
-            (trxarchive/add-trxarchive conn/db {:ID @txid 
+              (if (nil? (get hash :hash))
+              ; When it's no hash it's return the error from blockchain
+               (ok {:message hash})
+               (try 
+                ; save trx to local db
+                (trxarchive/add-trxarchive conn/db {:ID @txid 
                                                 :BLOCK nil 
-                                                :HASH (get hash :message) 
+                                                :HASH (get hash :hash) 
                                                 :SENDER (get (users/get-users-by-id conn/db {:ID (get (auth/token? token) :_id)}) :wallet)
                                                 :DESTINATION destination 
                                                 :AMOUNT (Float/parseFloat amount)
                                                 :FEE 0.0001 
                                                 :MEMO memo
-                                                :CREATED_BY (get (auth/token? token) :_id)}))
-          
-        (ok {:message "Your transaction is on the way!"})
+                                                :CREATED_BY (get (auth/token? token) :_id)})
+                (ok {:message "Your transaction is on the way!"})
+                (catch Exception ex
+                  (writelog/tx-log! (str "FAILDED : FN Pay from : " (get (auth/token? token) :_id) " Out of SEL "))))))
+        ; (ok {:message "Your transaction is on the way!"})
           (catch Exception ex
             (writelog/tx-log! (str "FAILDED : FN Pay from : " (get (auth/token? token) :_id) " Out of SEL "))))
         (ok {:error {:message "PIN does not correct!"}}))
@@ -167,22 +172,27 @@
                           (get (client/post (str (get env :selendpoint) "/transfer")
                                   {:form-params {:sender (ed/decrypt (get (users/get-seed-by-id conn/db {:ID id}) :seed))
                                                   :assetCode asset-code
-                                                  :dest destination
-                                                  :amount amount
+                                                  :receiver destination
+                                                  :amount (Float/parseFloat amount)
                                                   :memo memo}
                                     :content-type :json}) :body) :key-fn keyword)]
-            ; (println (get hash :message))
-            ; save trx to local db
-            (trxarchive/add-trxarchive conn/db {:ID @txid 
-                                                :BLOCK nil 
-                                                :HASH (get hash :message) 
-                                                :SENDER (get (users/get-all-users-by-id conn/db {:ID id}) :wallet)
-                                                :DESTINATION destination 
-                                                :AMOUNT (Float/parseFloat amount)
-                                                :FEE 0.0001 
-                                                :MEMO memo
-                                                :CREATED_BY apikey}))
-        (ok {:message "Your transaction is on the way!"})
+            (if (nil? (get hash :hash))
+              ; When it's no hash it's return the error from blockchain
+               (ok {:message hash})
+               (try 
+                      ; save trx to local db
+                  (trxarchive/add-trxarchive conn/db {:ID @txid 
+                                                      :BLOCK nil 
+                                                      :HASH (get hash :hash) 
+                                                      :SENDER (get (users/get-all-users-by-id conn/db {:ID id}) :wallet)
+                                                      :DESTINATION destination 
+                                                      :AMOUNT (Float/parseFloat amount)
+                                                      :FEE 0.0001 
+                                                      :MEMO memo
+                                                      :CREATED_BY apikey})
+                  (ok {:message "Your transaction is on the way!"})
+                (catch Exception ex
+                  (writelog/tx-log! (str "FAILDED : FN pay-by-api " (.getMessage ex)))))))
         (catch Exception ex
           (writelog/tx-log! (str "FAILDED : FN pay-by-api " (.getMessage ex)))))
     (ok {:message {:error "Invalid API KEYS"}})))

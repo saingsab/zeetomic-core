@@ -1,0 +1,9 @@
+[workspace]
+members = [
+    "subkey",
+    "operation",
+    "http_service",
+]
+
+[profile.release]
+panic = "unwind"
