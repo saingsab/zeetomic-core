@@ -1,5 +1,5 @@
 -- :name create-sdm-products-table :! 
--- :doc created at 20201116 by saing t.me/saingsab
+-- :doc created at 20210114 by saing t.me/saingsab
 CREATE TABLE IF NOT EXISTS SDM_PRODUCTS(
     ID	        VARCHAR (36) PRIMARY KEY,
     NAME	    TEXT,
@@ -93,3 +93,46 @@ WHERE ID = :ID;
 UPDATE SDM_PRODUCTS
 SET IS_SOLD  = TRUE
 WHERE ID = :ID
+
+-- :name delete-products-by-id :! :n
+DELETE FROM SDM_PRODUCTS 
+WHERE ID = :ID
+
+-- :name update-products-by-id :! :n
+UPDATE SDM_PRODUCTS
+SET NAME        = :NAME, 
+    PRICE       = :PRICE,
+    SHIPPING    = :SHIPPING,
+    WEIGHT      = :WEIGHT,
+    DESCRIPTION = :DESCRIPTION,
+    THUMBNAIL   = :THUMBNAIL,
+    CATEGORY_ID = :CATEGORY_ID,
+    PAYMENT_ID  = :PAYMENT_ID,
+    UPDATED_AT	= current_timestamp
+WHERE ID = :ID
+
+-- :name get-all-products-guest :? :*
+SELECT  p.ID,
+        p.NAME,
+        p.PRICE,
+        s.SHIPPING_SERVICE,
+        s.PRICE AS SHIPPING_FEE,
+        p.WEIGHT,
+        p.DESCRIPTION,
+        p.THUMBNAIL,
+        c.CATEGORY_NAME,
+        p.PAYMENT_ID,
+        p.IS_SOLD,
+        p.CREATED_AT,
+        (u.FIRST_NAME, u.LAST_NAME) AS SELLER,
+       SUBSTRING(u.PHONENUMBER, 1, 10) AS PHONENUMBER,
+        u.ADDRESS
+
+FROM SDM_PRODUCTS AS p
+INNER JOIN USERS AS u
+ON u.ID = p.CREATED_BY
+INNER JOIN SDM_PRODUCT_CATEGORY AS c
+ON p.CATEGORY_ID = c.ID
+INNER JOIN SDM_SHIPPING_SERVICES AS s
+ON p.SHIPPING = s.ID
+ORDER BY CREATED_AT DESC;

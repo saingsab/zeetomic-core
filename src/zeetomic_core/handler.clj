@@ -219,6 +219,17 @@
     :category-id s/Str
     :payment-id s/Str})
 
+(s/defschema Sdm-edit-product
+  { :id s/Str
+    :name s/Str
+    :price s/Str
+    :shipping s/Str
+    :weight s/Str
+    :description s/Str
+    :thumbnail s/Str
+    :category-id s/Str
+    :payment-id s/Str})
+
 (s/defschema Sdm-make-order 
  { :product-id s/Str 
    :qty s/Str
@@ -316,7 +327,7 @@
       (pay/history-by-api (get apibalance :id)
                           (get apibalance :apikey)
                           (get apibalance :apisec)))
-    ; 
+  ; 
   ; next endpoine for external APIS
   )
   ; Selendra Market Endpoint
@@ -448,7 +459,33 @@
     (GET "/weight-options" []
       :header-params [authorization :- s/Str]
       :summary "List shipping-services"
-      (sdm-weight/get-sdm-weight-options authorization))) 
+      (sdm-weight/get-sdm-weight-options authorization))
+
+    (POST "/update-product" []
+      :body [sdm-edit-product Sdm-edit-product]
+      :header-params [authorization :- s/Str]
+      :summary "Editing product on the market by ownder"
+      (sdm-products/update-products authorization
+                                  (get sdm-edit-product :id)
+                                  (get sdm-edit-product :name)
+                                  (get sdm-edit-product :price)
+                                  (get sdm-edit-product :shipping)
+                                  (get sdm-edit-product :weight)
+                                  (get sdm-edit-product :description)
+                                  (get sdm-edit-product :thumbnail)
+                                  (get sdm-edit-product :category-id)
+                                  (get sdm-edit-product :payment-id)))  
+
+    (POST "/delete-product" [] 
+      :body [sdm-product-id Sdm-product-id]
+       :header-params [authorization :- s/Str]
+       :summary "Delete products by id"
+       (sdm-products/delete-product! authorization
+                                    (get sdm-product-id :id)))
+                                    
+    (GET "/listing-guest" []
+       :summary "Products listing"
+       (sdm-products/get-all-products-guest)))
 
    (context "/ke/v1" []
     ;  :no-doc true
