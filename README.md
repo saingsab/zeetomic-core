@@ -6,8 +6,7 @@ The platform is designed to bring collectively a set of logistics, private equit
 
 Zeetomic Platform currently built on top of the Stellar network and engages with advanced blockchain technology to extended capabilities as fast transaction processing at low cost, enhanced the security of all processes-from issuance to storage to transfers of tokens for swap, trading on the market.
 
-## Recently Projects
-
+## This Codebase Suit For
 ### Blockchain as a Customer Loyalty solution
 
 Customer loyalty programs allow companies to reward customers who make purchases frequently or on a specified period.
